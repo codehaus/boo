@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<pipeline>
+
+	<step type='Boo.Antlr.BooParsingStep, Boo.Antlr' />
+	<step type='Boo.Lang.Compiler.Pipeline.ImportResolutionStep, Boo' />
+	<step type='Boo.Lang.Compiler.Pipeline.AstAttributesStep, Boo' />
+	<step type='Boo.Lang.Compiler.Pipeline.MacroExpansionStep, Boo' />
+	<step type='Boo.Lang.Compiler.Pipeline.AstNormalizationStep, Boo' />
+	<step type='Boo.Lang.Compiler.Pipeline.SemanticStep, Boo' />
+
+</pipeline>
