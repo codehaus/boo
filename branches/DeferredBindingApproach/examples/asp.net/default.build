@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project name="Boo asp.net examples" default="build">
+
+	<property name="booc" value="../../build/booc.exe" />
+	<property name="Boo.dll" value="../../build/Boo.dll" />
+	<property name="Boo.NAnt.dll" value="../../build/Boo.NAnt.dll" />
+	
+	<target name="rebuild" depends="clean, build" />
+	
+	<target name="clean">
+		<delete dir="output" if="${directory::exists('output')}" />
+	</target>
+
+	<target name="build">
+		<mkdir dir="output" />
+		<mkdir dir="output/bin" />
+		
+		<loadtasks assembly="${Boo.NAnt.dll}" />
+		
+		<booc output="output/bin/Boo.Examples.Web.dll" target="library">
+		
+			<sources basedir=".">
+				<includes name="*.boo" />
+			</sources>
+			
+			<references>
+				<includes name="System.Web.dll" />
+			</references>
+			
+		</booc>
+
+		<copy todir="output">			
+			<fileset basedir=".">
+				<includes name="*.aspx" />
+			</fileset>
+		</copy>
+		
+		<copy todir="output/bin" file="${Boo.dll}" />
+		
+	</target>
+	
+	<target name="run" depends="build">
+		<exec program="cassiniwebserver.exe">
+			<arg file="output" />
+			<arg value="80" />
+		</exec>
+	</target>
+	
+</project>

@@ -1,0 +1,59 @@
+;Compiler Error Messages
+MultipleClassInheritance=The class '{0}' already has '{1}' as its base class. 
+NamedParameterMustBeReference=Parameter name must be an identifier.
+NamedParametersNotAllowed=Named arguments are only allowed for constructors.
+AmbiguousName=Ambiguous reference {0}: {1}.
+UnknownName=Unknown identifier: {0}.
+CantCastToValueType='{0}' is a value type. The 'as' operator can only be used with reference types.
+NotAPublicFieldOrProperty=The name {0} does not refer to a public property or field of the type {1}.
+MissingConstructor=The {0} type does not have a constructor with the signature {1}.
+AttributeResolution=An error occurred during the resolution of the {0} ast attribute: {1}.
+AstAttributeMustBeExternal={0} is an internal type. Ast attributes must be external types.
+StepExecution=An error occurred during the execution of the step {0}: {1}.
+ICompilerStepInterface=The type {0} does not implement the ICompilerStep interface.
+RequiredAttribute=The element {0} must specify the attribute {1}.
+InvalidAssemblySetup=AssemblyBuilder wasn't correctly set up.
+BindingManager.UnboundNode=Node {0} at {1} is not bound.
+MethodArgumentCount=No overload of the method {0} takes {1} parameter(s).
+MethodSignature=The best overload for the method '{1}' is not compatible with the argument list '{0}'.
+NameNotType=The name {0} does not denote a valid type.
+MemberNotFound='{0}' is not a member of '{1}'.
+MemberNeedsInstance='{0}' can't be used without an instance.
+InvalidNamespace=Namespace {0} not found, maybe you forgot to add an assembly reference?
+IncompatibleExpressionType=Expression type '{1}' not compatible with target ('{0}' expected).
+NoApropriateOverloadFound=No apropriate version of '{1}' for the argument list '{0}' was found.
+NoApropriateConstructorFound=The type '{0}' does not have a visible constructor that matches the signature '{1}'.
+InvalidArray=Only unidimensional arrays are supported.
+BoolExpressionRequired={0} cannot be used in bool context.
+AmbiguousTypeReference=Ambiguous type reference, it could be any of the following: {0}.
+NoEntryPoint=No entry point found.
+MoreThanOneEntryPoint=More than one entry point found.
+NodeNotInCollection=The node {0} is not in the collection.
+NotImplemented=Language feature still not implemented: {0}.
+EventArgumentMustBeAMethod=The event '{0}' demands a method reference compatible with '{1}'.
+TypeNotAttribute=The type '{0}' is not a valid attribute.
+ExpressionStatementMustHaveSideEffect=Expressions in statements must only be executed for their side-effects.
+
+;Attribute Messages
+InvalidNodeForAttribute=This attribute can only be applied to {0} nodes.
+
+;ANTLR Messages
+NoViableAltException=Unexpected token: {0}.
+
+;BooC Messages
+BooC.Errors={0} error(s).
+BooC.ProcessingTime={0} module(s) processed in {1}ms after {2}ms of environment setup.
+BooC.FatalError=Fatal error: {0}.
+BooC.InvalidOption=Invalid option: {0}.
+BooC.UnableToLoadAssembly=Failed to load assembly {0}.
+BooC.UnableToLoadPipeline=Failed to load pipeline {0}, cause: {1}.
+BooC.NoPipeline=No compilation pipeline specified (/p:<PIPELINE>)
+BooC.NoInputSpecified=No inputs specified
+BooC.NoOutputSpecified=No output specified
+
+;Boo.Lang
+ArgumentNotEnumerable=Argument is not enumerable (does not implement System.Collections.IEnumerable).
+CantEnumerateNull=Can't enumerate null.
+UnpackListOfWrongSize=Unpack list of wrong size.
+CantUnpackNull=Can't unpack null.
+UnpackArrayOfWrongSize=Unpack array of wrong size (expected={0}, actual={1}).

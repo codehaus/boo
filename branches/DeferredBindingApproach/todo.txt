@@ -1,0 +1,252 @@
+﻿Geração de Código
+=================
+
+Milestone 1 (hello.boo)
+-----------------------
+
+done * bultins
+done * local variables
+done * expression interpolation (string formatting)
+ 
+Milestone 2 (debug)
+-------------------
+
+done * line numbers na vers�o de depura��o
+done * depurar com o mscordbg
+
+Milestone 3 (helloforms.boo - using, métodos estáticos, criação de objetos)
+---------------------------------------------------------------------------
+done * using XXX from XXX
+done * criar objeto (ConstructorBinding)
+done * membros de instancia (f.Show())
+done * argumentos nomeados na criação de objetos
+done * membros estáticos Application.Run()
+done * resolução de métodos por argumentos de tipo compatível
+done * simplificar código:
+	done * InternalTypeBinding e ExternalTypeBinding implements INameSpace: unificar codigo;
+	done * o mesmo para InternalMethodBinding;
+done * propriedades simples (f.Controls)
+
+Milestone 3.1 (grep.boo)
+----------------------
+
+done * definição de métodos do módulo
+done * chamada de métodos do módulo
+done * checagem de parametros estrita nas invocaçoes de método
+done * array unpacking
+done * for item in array
+done * for index, item in enumerate(array)
+done * melhor mensagem de erro para array unpacking (checar length do array antes de acessá-lo 
+e emitir exception "Unpack list of wrong size")
+done * Quando o argumento do For ou Unpack for do tipo System.Object, não fazer simplesmente cast
+mas invocar RuntimeServices.GetEnumerable(object) que tenta encontrar a melhor versão de 
+um enumerável para o objeto passado e, no caso de falha, exibe mensagem de erro mais adequada
+done * RuntimeServices.GetEnumerable(object) deve suportar StreamReader
+done * resolução de métodos
+done * downcast (peverify grep)
+done * match operator ~=
+done * if stmt modifier
+
+Milestone 3.3 (replace.boo)
+---------------------------
+done * using Type (using Boo.IO.TextFile)
+done * if string compare
+
+Milestone 3.4 (rgrep.boo)
+-------------------------
+done * recursive functions
+done * namespace resolution for MemberReferenceExpression
+done * using namespace as
+
+Milestone 3.5
+-------------
+done * IAstTransformer: uma maneira mais integrada de alterar os nós da AST em uma visita
+DepthFirst, a interface é parecida com IAstSwitcher com a diferença de que cada método,
+tem um valor de entrada e DE SAÍDA que é o novo nó a ser colocado no lugar do nó visitado:
+	void OnModule(Module module, ref Module newModule);
+	void OnIfStatement(IfStatement statement, ref Statement newStatement)
+	void OnBinaryExpression(BinaryExpression expression, ref Expression newExpression)
+done * matar Boo.Util.ISwitch/ISwitcher, eles não agregam valor algum no momento
+done * quebrar AbstractCompilerStep em AbstractAstSwitcherStep extends AbstractCompilerStep
+done * criar AbstractAstTransformerStep extends AbstractCompilerStep
+done * unit tests para o compilador/interpretador
+	done * criar uma pasta onde cada arquivo .boo é um testcase com um equivalente .out
+	que contém a saída esperada
+	done * o teste executa todos os passos da compilação normal e verifica o arquivo final com peverify
+done * mover todos as constantes de tipo de BindingManager para Types
+done * testes para enum (Criar enum em Boo.Tests e escrever alguns test cases)
+done * LeaveDeclarationStatement retorna um ExpressionStatement(BinaryExpression()) de assignment e declara a variável
+
+Milestone 3.6 (faxina)
+-----------------------
+done * boxing (print e StringFormatting)
+done * GPL license for all source files
+
+done * trocar todos os testes do parser para ao invés de utilizarem xml como base de comparação (o
+que falha no mono já que os xmls gerados são diferentes), utilizar o BooPrinter para gerar a
+forma canônica, dessa forma, BooPrinter também será testado.
+
+done * renomear ListDisplayExpression for IteratorDisplayExpression
+
+done * todos as construçoes que suportam blocos (for, while, if, given, try, catch, etc) não devem possuir
+uma StatementCollection diretamente como filha mas utilizar um Block ao invés, isso facilita o tratamento
+genérico de blocos nos passos (facilitar mover/trocar blocos inteiros de lugar)
+
+done * mover toda dependência no ANTLR para outro assembly e remover qualquer referência aos simbolos
+antlr dos fontes de Boo.dll e Boo.Tests.dll (incluíndo AST, etc)
+
+done * mover boo.g e booel.g para src/Boo.Antlr
+
+done * Remover toda e qualquer menção à Assembly.Emit do SemanticStep (e considerar a possibilidade de
+remover o AssemblySetupStep): SemanticStep deve lidar exclusivamente com as semânticas e transformaçoes
+exigidas pela linguagem, permitindo múltiplos backends de geraçao de código
+
+done * unificar SetupAssemblyStep com EmitAssemblyStep
+
+done * criar um nó Unless
+
+done * booc nant task (em boo, obviamente)
+
+* super
+
+* type
+
+* field initializers
+
+* null
+
+* transformação de acesso de propriedade em invocaçao de método passa para SemanticStep
+
+* AstAttribute vira IAstAttribute que implementa ICompilerStep
+
+* Criar AbstractAstAttribute extends AbstractCompilerStep
+
+* melhor tratamento de TypeReferences no parser, o tipo TypeReference desaparece
+e passa a ser utilizado ReferenceExpression em seu lugar
+(para utilizar a resolução padrão de membros, etc)
+	
+* remover alguns dos EmitCastIfNeeded do EmitAssemblyStep e move-los para o
+SemanticStep que deverá criar AsExpression sempre que necessário
+
+* BooPrinterVisitor deve imprimir as declaraçoes de variáveis locais
+
+* EnsureMethodIsResolved => EnsureMemberIsResolved
+
+* resolução de tipos em MethodInvocationExpression quando existe um nome no mesmo
+escopo mas que não resolve para um tipo, exemplo, tipo Size dentro de um classe
+derivada de Control (que tem uma propriedade chamada Size):
+	* uma solução possível:
+		* OnMethodInvocationExpression antes de resolver o target liga uma flag
+		dizendo que o nome (quando uma referência) deve ser resolvido
+		para todas as suas possibilidades; assim, temos um AmbiguousBinding
+		que pode ser resolvido (levando em conta primariamente a capacidade
+		de ser chamado ou não);
+
+Milestone 3.7 (macro infraestructure)
+-------------------------------------
+* using macro
+* lock macro
+
+
+Milestone 3.8
+-------------
+done * try/catch/ensure
+done * raise
+* ? for deve criar um try { } finally { RuntimeServices.DisposeEnumerator(iterator); }
+* statement modifiers:
+	* unless
+	* while
+	* until
+	
+Milestone 3.9 (better error checking)
+-------------------------------------
+* constructors can't have a return value
+	
+Milestone 4 (delegate support)
+------------------------------
+
+done * automatic delegate instance creation
+* automatic delegate interface adaptation
+* native regular expression support:
+	* re expression /foo/
+
+Milestone 4.3 (otimizações)
+---------------------------
+* compilador deve entender o atributo [EnumeratorItemType(typeof(string))] para TextFile e StreamReaderEnumerator
+e declarar os tipos de acordo
+* criar ModuleBinding e unificar com ModuleNamespace;
+
+Milestone 5
+-----------
+
+* classes
+* declara��o de campos
+* declara��o de propriedades
+* defini��o de m�todos
+* expressões simples com inteiros
+* concatenação de strings
+* concatenação de strings com inteiros
+* classes devem ser serializ�veis
+* cria��o de objetos (classes internas)
+* chamada de m�todos est�ticos (classes internas)
+* chamada de m�todos instance
+* null expression
+* assert statement
+done * tuples (arrays) - operador v�rgula => a = 3, 5
+done * tuple unpacking - a, b  = 3, 5
+* tuple indexing (a[0] = 1)
+done * for item in tuple
+* property access
+* property assignment
+* list creation [1, 2, 3]
+* list indexing
+done * bool (true, false)
+* operadores de convers�o (operator bool, operator string, etc)
+
+Milestone 6
+-----------
+
+* enum
+* interface
+* property
+
+Milestone 7
+-----------
+
+* runtime objects
+foo = runtimeobject("InternetExplorer.Application")
+foo.Navigate2("www.foo.bar")
+
+Otimiza��es
+-----------
+* tuple unpacking trocar unpacking for vários expressionstatement(binary expression):
+	a, b, = 1, 2
+	por
+	a = 1
+	b = 2
+
+	criar para isso um novo tipo de statement que pode ser utilizado no lugar de
+	qualquer outro statement:
+		class StatementGroup(Statement):
+			Statements as StatementCollection
+			
+* patterns reference in (value1, value2), em outras palavras:
+	BinaryExpression(
+		BinaryOperatorType.MembershipTest,
+		ReferenceExpression,
+		TupleLiteralExpression)
+	devem ser transformados em:
+	
+		((reference == value1) or (reference == value2))
+	
+* tail call prefix para funçoes recursivas com a ScanDirectories do rgrep.boo
+
+* os métodos com yield e métodos que retornam iterators como enumerate devem
+marcar o tipo retornado por IEnumerator.Current de forma que o compilador
+possa otimizar a utilizaçao de tais itens (no caso do enumerate, o compilador
+saberia que sempre estaria lidando com um array e poderia gerar um unpacking
+otimizado, etc);
+* const expression unfolding
+* proper tail recursion (fatorial)
+done * for item in array/tuple => traduzir indexaçãoo direta do array com checagem de
+bounds, o JIT é capaz de detectar esses patterns e otimizar o c�digo de acordo

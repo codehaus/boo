@@ -1,0 +1,60 @@
+﻿;Compiler Error Messages
+MultipleClassInheritance=A classe '{0}' já tem '{1}' como classe base.
+NamedParameterMustBeReference=Nome do parâmetro deve ser um identificador.
+NamedParametersNotAllowed=Parâmetros são permitidos apenas com construtores.
+AmbiguousName=Referência ambígua {0}: {1}.
+UnknownName=Identificador desconhecido: {0}.
+CantCastToValueType='{0}' é um tipo-valor. O operador 'as' pode ser utilizado somente com tipos referência.
+NotAPublicFieldOrProperty=O nome {0} não representa um campo ou propriedade pública do tipo {1}.
+MissingConstructor=O tipo {0} não possui nenhum constructor com a assinatura {1}.
+AttributeResolution=Erro durante a aplicação do atributo {0}: {1}.
+AstAttributeMustBeExternal={0} é um tipo interno. Atributos para a AST devem ser tipos definidos em outros assemblies.
+StepExecution=Erro durante a execução do passo {0}: {1}.
+ICompilerStepInterface=O tipo {0} não implementa a interface ICompilerStep.
+RequiredAttribute=O elemento {0} deve conter um atributo de nome {1}.
+InvalidAssemblySetup=AssemblyBuilder não foi configurado corretamente.
+BindingManager.UnboundNode=O nó {0} na posição {1} não foi resolvido corretamente.
+MethodArgumentCount=Nenhuma versão do método {0} aceita {1} parâmetro(s).
+MethodSignature=A versão mais próxima do método '{1}' não é compatível com a lista de argumentos '{0}'.
+NameNotType=O nome {0} não denota um tipo válido.
+MemberNotFound='{0}' não é um membro de '{1}'.
+MemberNeedsInstance='{0}' não pode ser utilizado sem uma instância.
+InvalidNamespace=Espaço {0} não encontrado, talvez você tenha esquecido de adicionar uma referência?
+IncompatibleExpressionType=Tipo da expressão '{1}' incompatível com destino ('{0}').
+NoApropriateOverloadFound=Nenhuma versão apropriada de '{1}' para a lista de argumentos '{0}' foi encontrada.
+NoApropriateConstructorFound=O tipo '{0}' não tem um constructor visível compatível com a assinatura '{1}'.
+InvalidArray=Somente arrays unidimensionais são suportados.
+BoolExpressionRequired={0} não pode ser utilizado em um contexto booleano.
+AmbiguousTypeReference=Referência de tipo ambígua: {0}.
+NoEntryPoint=Nenhum ponto de entrada definido.
+MoreThanOneEntryPoint=Mais de um ponto de entrada encontrado.
+NodeNotInCollection=O nó {0} não está na coleção.
+NotImplemented=Característica ainda não implementada: {0}.
+EventArgumentMustBeAMethod=O evento '{0}' exige uma referência a um método compatível com '{1}'.
+TypeNotAttribute=O tipo '{0}' não é um atributo.
+ExpressionStatementMustHaveSideEffect=Expressões em sentenças devem ser executadas apenas por seus efeitos colaterais.
+
+;Attribute Messages
+InvalidNodeForAttribute=Este atributo só pode ser aplicado a nós do tipo {0}.
+
+;Mensagens do ANTLR
+NoViableAltException=Token inesperado: {0}.
+
+;BooC Messages
+BooC.Errors={0} erro(s).
+BooC.ProcessingTime={0} módulo(s) processado(s) em {1}ms após {2}ms para configuração do ambiente de compilação.
+BooC.FatalError=Erro fatal: {0}.
+BooC.InvalidOption=Opção inválida: {0}.
+BooC.UnableToLoadAssembly=Não foi possível carregar a montagem {0}.
+BooC.UnableToLoadPipeline=Não foi possível carregar a pipeline {0}, causa: {1}.
+BooC.NoPipeline=Nenhuma pipeline de compilação especificada (/p:<PIPELINE>)
+BooC.NoInputSpecified=Nenhum fonte especificado
+BooC.NoOutputSpecified=Arquivo de saída não especificado
+
+;Boo.Lang
+ArgumentNotEnumerable=Argumento não é enumerável (não implementa System.Collections.IEnumerable).
+CantEnumerateNull=null não é enumerável.
+UnpackListOfWrongSize=Desempacotamento de lista de tamanho errado.
+CantUnpackNull=null não pode ser desempacotado.
+UnpackArrayOfWrongSize=Desempacotamento de array de tamanho errado. (esperado={0}, real={1}).
+
