@@ -1,2 +1,0 @@
-#!/bin/sh
-env mono $HOME/dotnet/boo/build/booi.exe "$@"
