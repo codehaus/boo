@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/local/bin/mono /home/rodrigob/dotnet/boo/build/booc.exe "$@"
