@@ -1,3 +1,0 @@
-import globals
-
-print(Foo())
