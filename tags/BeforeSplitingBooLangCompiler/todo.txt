@@ -1,0 +1,216 @@
+﻿done * const (literal fields)
+
+* check return types for method overrides
+
+* check visibility for override
+
+* abstract method makes class abstract
+	
+* artigo "Estendendo o compilador utilizando pipelines", 
+	exemplos:
+		stylechecker step,
+		trace step
+		
+* artigo "Estendendo a linguagem utilizando macros e atributos"
+	using, lock
+	
+* CallableTypeBinding
+	* para funçoes
+	* para delegates (o tipo de um evento seria o CallableTypeBinding equivalente ao delegate)
+
+* map(callable, enumerable)
+
+* private interface implementations
+
+	class Foo(IDisposable):
+		def IDisposable.Dispose():
+			print("Dispose")
+			
+	método fica marcado como private...
+	
+* iterator expressions
+	return i*3 for i in range(10)
+
+* isolar Boo.Lang.Compiler em seu próprio assembly
+
+* booi: opçoes e um único script
+	* booi /c:pt-BR /r:Foo.dll /i:aux.boo foo.boo 1 2 3
+		argv do script seria (1, 2, 3), os argumentos que ocorrem
+		antes do primeiro nome simples de arquivo (foo.boo) seriam
+		consumidos pelo próprio booi
+
+* tipos callable implementam equivalência estrutural, assim, um tipo callable
+que é wrapper sobre um método qualquer, lembra o método, seus tipos de parâmetro e
+valor de retorno e pode ser utilizado na propagação de checagem de tipos, etc
+
+* promoção de bool para int32 e conversão automática de int32 para bool:
+	* and
+	* or
+
+* nomes de tipo primitivo podem ser utilizados em conversões:
+
+	int(Enum.Value), int("foo"), int(3.0)
+
+* criar primitivas box, unbox e __reference__ para o semantic step e outros passos
+que precisarem? Isso iria permitir remover os casts de EmitAssemblyStep
+
+	__box__(3.0) => pode ser substituído por cast(object, 3.0)
+	__unbox__(reference, int) => pode ser substituído por cast(int, reference)
+	__assertIsReference__(expression) # para uso por macros como lock por exemplo
+
+* ITypeBinding.GetDefaultMember() as IBinding => ITypeBinding.GetDefaultMembers() as (IBinding)
+
+* print macro
+
+* assert macro
+
+* singleline try (catchall):
+
+	try CloseConnection()	
+		|
+		V
+	try:
+		CloseConnection()
+	except:
+		pass
+
+* += para eventos vira add_Event(DelegateConstructor(..., ...))
+
+* ref, out parameters
+
+* assembly attributes: [assembly: AssemblyVersion("foo")]
+
+* module attributes: [module: ]
+
+* remover DepthFirstTransformer pois não é mais necessário e só confunde...
+
+* modo MACRO de compilação (ver macro.boo)
+
+* macros para o SharpDevelop em boo
+
+* unboxing deve fazer conversão numérica
+	
+* remover casts dos EmitCastIfNeeded do EmitAssemblyStep e move-los para o
+SemanticStep que deverá criar CastExpression sempre que necessário
+
+* BooPrinterVisitor deve imprimir as declaraçoes de variáveis locais?
+
+* resolução de tipos em MethodInvocationExpression quando existe um nome no mesmo
+escopo mas que não resolve para um tipo, exemplo, tipo Size dentro de um classe
+derivada de Control (que tem uma propriedade chamada Size):
+	* uma solução possível:
+		* OnMethodInvocationExpression antes de resolver o target liga uma flag
+		dizendo que o nome (quando uma referência) deve ser resolvido
+		para todas as suas possibilidades; assim, temos um AmbiguousBinding
+		que pode ser resolvido (levando em conta primariamente a capacidade
+		de ser chamado ou não);
+
+* StatementGroup para permitir o agrupamento de statements com mesmo propósito
+
+
+Milestone 3.8
+-------------
+* ? for deve criar um try { } finally { RuntimeServices.DisposeEnumerator(iterator); }
+* float literals: 3.0f
+* hexadecimal integer literals: 0x01
+* binary literals: 0b001
+* docbook Step (generates docbook files with all the documentation)
+	
+Milestone 3.9 (better error checking)
+-------------------------------------
+* constructors can't have a return value
+* constructors can't yield values
+* static constructors must be public
+* static constructors cannot declare parameters
+* can't create instance of interface 'XXX'
+* can't create instance of abstract class 'XXX'
+* can't create instance of enum 'XXX'
+* class 'XXX' already has a definition for a member 'YYY' with the signature 'ZZZ'
+* WARNING: unused local variable
+* WARNING: local 'xx' is used before initialization
+* WARNING: property getter should return a value
+* WARNING: unreachable code detected
+* WARNING: right hand side of 'is' operator is a type reference, are you sure you don't want to use 'isa' instead?
+* WARNING: performance hit: equality operator with object references
+* method override with different accessibility
+* override accessibility checks
+* inheritance cycles (A(B), B(C), C(A))
+* CompilerParameters.Properties (passed in the command line as -D:name=value just like nant)
+* warning levels
+	
+Milestone 4 (delegate support)
+------------------------------
+* automatic delegate interface adaptation
+
+Milestone 4.3 (algumas otimizações)
+---------------------------
+* compilador deve entender o atributo [EnumeratorItemType(typeof(string))] para TextFile e StreamReaderEnumerator
+e declarar os tipos de acordo
+*  patterns reference ((in|is|isa) (not)?) (value1, value2), em outras palavras:
+	BinaryExpression(
+		BinaryOperatorType.*,
+		ReferenceExpression,
+		TupleLiteralExpression)
+	devem ser transformados em:
+	
+		((reference == value1) or (reference == value2))
+		((reference is value1) or (reference is value2))
+		etc
+
+
+Milestone 5
+-----------
+
+* assert macro
+* operadores de convers�o (operator bool, operator string, etc)
+
+Milestone 6 (dynamic behavior)
+------------------------------
+
+* array equality even for object references:
+	a1 as object = (1, 2)
+	a2 as object = (1, 2)
+	assert a1 == a2
+
+Milestone 7
+-----------
+
+* runtime objects
+foo = runtimeobject("InternetExplorer.Application")
+foo.Navigate2("www.foo.bar")
+
+Exemplos/Artigos
+----------------
+
+* PreAttribute:
+
+	[pre(n > 0)]
+	def fatorial(n as int):
+		return n*fatorial(n-1) if n > 1
+		return 1
+
+Otimiza��es
+-----------
+* otimização para chamadas a array.Length
+* tuple unpacking trocar unpacking for vários expressionstatement(binary expression):
+	a, b, = 1, 2
+	por
+	a = 1
+	b = 2
+
+	criar para isso um novo tipo de statement que pode ser utilizado no lugar de
+	qualquer outro statement:
+		class StatementGroup(Statement):
+			Statements as StatementCollection			
+	
+* tail call prefix para funçoes recursivas com a ScanDirectories do rgrep.boo
+
+* os métodos com yield e métodos que retornam iterators como enumerate devem
+marcar o tipo retornado por IEnumerator.Current de forma que o compilador
+possa otimizar a utilizaçao de tais itens (no caso do enumerate, o compilador
+saberia que sempre estaria lidando com um array e poderia gerar um unpacking
+otimizado, etc);
+* const expression unfolding
+* proper tail recursion (fatorial)
+done * for item in array/tuple => traduzir indexaçãoo direta do array com checagem de
+bounds, o JIT é capaz de detectar esses patterns e otimizar o c�digo de acordo
