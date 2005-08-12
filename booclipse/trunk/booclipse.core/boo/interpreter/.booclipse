@@ -1,0 +1,14 @@
+<settings>
+  <outputType>exe</outputType>
+  <references>
+    <booclipse.core.internal.AssemblySourceReference-Remembrance>
+      <path>/booclipse.core/boo/booclipse.core</path>
+    </booclipse.core.internal.AssemblySourceReference-Remembrance>
+    <booclipse.core.internal.GlobalAssemblyCacheReference-Remembrance>
+      <name>Boo.Lang.Interpreter</name>
+      <version>0.5.6.1767</version>
+      <culture>neutral</culture>
+      <token>32c39770e9a21a67</token>
+    </booclipse.core.internal.GlobalAssemblyCacheReference-Remembrance>
+  </references>
+</settings>
