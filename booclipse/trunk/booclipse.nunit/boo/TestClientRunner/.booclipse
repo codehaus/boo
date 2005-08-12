@@ -1,0 +1,20 @@
+<settings>
+  <outputType>exe</outputType>
+  <references>
+    <booclipse.core.internal.GlobalAssemblyCacheReference-Remembrance>
+      <name>nunit.core</name>
+      <version>2.2.0.0</version>
+      <culture>neutral</culture>
+      <token>96d09a1eb7f44a77</token>
+    </booclipse.core.internal.GlobalAssemblyCacheReference-Remembrance>
+    <booclipse.core.internal.GlobalAssemblyCacheReference-Remembrance>
+      <name>nunit.util</name>
+      <version>2.2.0.0</version>
+      <culture>neutral</culture>
+      <token>96d09a1eb7f44a77</token>
+    </booclipse.core.internal.GlobalAssemblyCacheReference-Remembrance>
+    <booclipse.core.internal.LocalAssemblyReference-Remembrance>
+      <path>/booclipse.nunit/lib/booclipse.core.dll</path>
+    </booclipse.core.internal.LocalAssemblyReference-Remembrance>
+  </references>
+</settings>

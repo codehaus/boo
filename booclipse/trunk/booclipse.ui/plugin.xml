@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+   		point="org.eclipse.ui.ide.projectNatureImages">
+   		<image 
+   			icon="icons/BooProject.gif"
+   			natureId="booclipse.core.booNature"
+   			id="booclipse.ui.booNatureImage">
+   		</image>
+   	</extension>
+
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Boo Source Code Editor"
+            extensions="boo"
+            icon="icons/BooFile.png"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="booclipse.ui.editors.BooEditor"
+            id="booclipse.ui.editors.BooEditor">
+      </editor>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="booclipse.ui.contribution1"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="booclipse.ui.resources.ToggleNatureAction"
+               enablesFor="+"
+               id="booclipse.ui.addRemoveNatureAction"
+               label="Toggle Boo Nature"
+               menubarPath="additions"/>
+      </objectContribution>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="booclipse.ui.preferences.GeneralBooPreferencePage"
+            id="booclipse.ui.preferences.GeneralBooPreferencePage"
+            name="Boo"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="booclipse.ui.preferences.PreferenceInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="booclipse.ui.resources.BooAssemblySourcePropertyPage"
+            id="booclipse.ui.resources.booAssemblySourcePropertyPag"
+            name="Boo Assembly Properties"
+            objectClass="org.eclipse.core.resources.IFolder">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="booclipse.ui.views.ReferenceContainerPropertyPage"
+            id="booclipse.ui.views.booReferenceContainerPropertyPage"
+            name="Assembly References"
+            objectClass="booclipse.ui.views.ReferenceContainer">
+      </page>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.perspectives">
+         <perspective
+         	id="booclipse.ui.booPerspective"
+         	name="Boo Perspective"
+         	class="booclipse.ui.perspectives.BooPerspective"
+         	icon="icons/BooPerspective.png">
+         </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="booclipse.ui"
+            name="Boo"/>
+      <view
+            category="booclipse.ui"
+            class="booclipse.ui.views.BooExplorerView"
+            icon="icons/BooExplorer.png"
+            id="booclipse.ui.views.BooExplorerView"
+            name="Boo Explorer"/>
+            
+      <view
+            category="booclipse.ui"
+            class="booclipse.ui.views.BooInteractiveInterpreterView"
+            icon="icons/BooScript.png"
+            id="booclipse.ui.views.BooInteractiveInterpreterView"
+            name="Boo Interactive Interpreter"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+         <category
+         	id="booclipse.ui.wizards"
+         	name="Boo" />
+
+         <wizard 
+         	category="booclipse.ui.wizards"
+         	id="booclipse.ui.wizards.NewBooProjectWizard"
+         	name="Boo Project"
+         	class="booclipse.ui.wizards.NewBooProjectWizard"
+         	icon="icons/NewBooProject.png"
+         	project="true" />
+
+         <wizard
+               category="booclipse.ui.wizards"
+               class="booclipse.ui.wizards.NewClassWizard"
+               icon="icons/BooFile.png"
+               id="booclipse.ui.wizards.NewClassWizard"
+               name="Boo Class"/>
+               
+         <wizard
+               category="booclipse.ui.wizards"
+               class="booclipse.ui.wizards.NewAssemblySourceWizard"
+               icon="icons/BooFile.png"
+               id="booclipse.ui.wizards.NewAssemblySourceWizard"
+               name="Boo Assembly Source"/>
+   </extension>
+   
+   <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+       <launchConfigurationTypeImage
+               icon="icons/BooScript.png"
+               configTypeID="booclipse.core.scriptLaunchConfigurationType"
+ 		       id="booclipse.ui.launchConfigurationTypeImage.script">
+    </launchConfigurationTypeImage>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+       <launchConfigurationTypeImage
+               icon="icons/BooScript.png"
+               configTypeID="booclipse.core.appLaunchConfigurationType"
+ 		       id="booclipse.ui.launchConfigurationTypeImage.app">
+    </launchConfigurationTypeImage>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+    <launchConfigurationTabGroup
+        type="booclipse.core.scriptLaunchConfigurationType"
+        class="booclipse.ui.launching.BooScriptTabGroup"
+        id="booclipse.ui.launching.launchConfigurationTabGroup.booScript">
+    </launchConfigurationTabGroup>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+    <launchConfigurationTabGroup
+        type="booclipse.core.appLaunchConfigurationType"
+        class="booclipse.ui.launching.BooScriptTabGroup"
+        id="booclipse.ui.launching.launchConfigurationTabGroup.booApp">
+    </launchConfigurationTabGroup>
+	</extension>
+	
+	
+	<extension point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut
+        id="booclipse.ui.booScriptLaunchShortcut"
+        class="booclipse.ui.launching.BooScriptLaunchShortcut"
+        label="Boo Script"
+        icon="icons/BooScript.png"
+        modes="run, debug">
+            <perspective id="booclipse.ui.booPerspective"/>
+            <perspective id="org.eclipse.debug.ui.DebugPerspective"/>
+            
+          <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+               <and>
+	               <test property="org.eclipse.debug.ui.matchesPattern" value="*.boo"/>
+	           </and>
+               </iterate>
+             </with>
+           </enablement>
+  		 </contextualLaunch>
+    </shortcut>
+	</extension>	
+	
+	<extension point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut
+        id="booclipse.ui.booApplicationLaunchShortcut"
+        class="booclipse.ui.launching.BooApplicationLaunchShortcut"
+        label="Boo Application"
+        icon="icons/BooScript.png"
+        modes="run, debug">
+            <perspective id="booclipse.ui.booPerspective"/>
+            <perspective id="org.eclipse.debug.ui.DebugPerspective"/>
+            
+          <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+               <and>
+	               <test property="org.eclipse.debug.ui.matchesPattern" value="*.boo"/>
+	           </and>
+               </iterate>
+             </with>
+           </enablement>
+  		 </contextualLaunch>
+    </shortcut>
+	</extension>	
+
+   <extension point="org.eclipse.ui.commands">
+	      <command
+            name="Boo Script"
+            description="Boo Script"
+            categoryId="org.eclipse.debug.ui.category.run"
+            id="booclipse.ui.booScriptLaunchShortcut.run">
+    	  </command>
+    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               id="booclipse.ui.views.BooInteractiveInterpreterView"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.TaskList"/>
+      </perspectiveExtension>
+   </extension>
+   
+	<extension point="org.eclipse.ui.console.consolePatternMatchListeners">
+		<consolePatternMatchListener
+			id="booclipse.ui.debug.StackTracePatternMatchListener"
+			regex="\(at\s.+\.(boo|cs|js):\d+\)"
+			class="booclipse.ui.debug.StackTracePatternMatchListener"
+			qualifier="boo|js|cs">
+			<enablement>
+			</enablement>
+		</consolePatternMatchListener>
+		
+		<consolePatternMatchListener
+			id="booclipse.ui.debug.CompilerOutputPatternMatchListener"
+			regex="\b.+\.(boo|cs|js)\(\d+,\d+\)"
+			class="booclipse.ui.debug.CompilerOutputPatternMatchListener"
+			qualifier="js|cs|boo">
+			<enablement>
+			</enablement>
+		</consolePatternMatchListener>
+	</extension>
+	
+	<extension point="org.eclipse.ui.decorators"> 
+		<decorator
+			id="booclipse.ui.BooAssemblySourceDecorator" 
+			class="booclipse.ui.decorators.BooAssemblySourceDecorator"
+			label="Boo Assembly Source Decorator"
+			state="true" 
+			icon="icons/AssemblySourceDecorator.gif"
+			lightweight="true" 
+			location="TOP_LEFT">
+			
+		<enablement>
+			<objectClass name="org.eclipse.core.resources.IFolder" />
+		</enablement>
+			
+		</decorator>
+	</extension>
+	
+
+</plugin>

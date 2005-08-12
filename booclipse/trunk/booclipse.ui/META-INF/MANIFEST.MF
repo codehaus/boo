@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Boo Development Tools
+Bundle-SymbolicName: booclipse.ui; singleton:=true
+Bundle-Version: 1.0.12
+Bundle-Activator: booclipse.ui.BooUI
+Bundle-Vendor: Rodrigo B. de Oliveira
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text,
+ org.eclipse.ui.editors,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.debug.core,
+ org.eclipse.debug.ui,
+ booclipse.core,
+ org.eclipse.ui.console
+Eclipse-AutoStart: true
+Bundle-ClassPath: booclipse.jar
+Export-Package: booclipse.ui,
+ booclipse.ui.editors,
+ booclipse.ui.perspectives,
+ booclipse.ui.resources,
+ booclipse.ui.views,
+ booclipse.ui.wizards

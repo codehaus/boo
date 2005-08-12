@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="booclipse.ui"
+      label="Boo Development Tools"
+      version="1.0.14"
+      provider-name="Rodrigo B. de Oliveira">
+
+   <description url="http://boo.codehaus.org/">
+      Boo Development Tools for Eclipse
+Boo - a wrist friendly language for the Common Language Infrastructure
+   </description>
+
+   <copyright url="http://boo.codehaus.org/">
+      Copyright (c) 2003-2005 by Rodrigo B. de Oliveira
+   </copyright>
+
+   <license url="http://boo.codehaus.org/">
+      Boo Development Tools for the Eclipse IDE
+Copyright (C) 2005 Rodrigo B. de Oliveira (rbo@acm.org)
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program; if not, write to the
+
+Free Software Foundation, Inc.,
+59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+   </license>
+
+   <url>
+      <update label="Boo Development Tools" url="http://priki.org/svn/booclipse/trunk/update/"/>
+   </url>
+
+   <plugin
+         id="booclipse.ui"
+         download-size="0"
+         install-size="0"
+         version="1.0.12"/>
+
+   <plugin
+         id="booclipse.nunit"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"/>
+
+   <plugin
+         id="booclipse.core"
+         download-size="0"
+         install-size="0"
+         version="1.0.13"/>
+
+</feature>
