@@ -55,7 +55,7 @@ client.OnMessage("RUN") do (message as Message):
 		client.Send("TESTS-STARTED", domain.CountTestCases().ToString())
 		domain.Run(TextWriterListener(client))
 	except x:
-		Console.WriteLine(x)
+		Console.Error.WriteLine(x)
 	client.Send("TESTS-FINISHED", "")
 	client.Stop()
 	
