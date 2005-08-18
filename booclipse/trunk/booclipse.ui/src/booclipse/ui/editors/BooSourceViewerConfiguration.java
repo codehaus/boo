@@ -27,6 +27,8 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.reconciler.IReconciler;
+import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.source.IAnnotationHover;
@@ -50,6 +52,10 @@ public class BooSourceViewerConfiguration extends SourceViewerConfiguration {
 	}
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 		return BooPartitionScanner.PARTITION_TYPES;
+	}
+	
+	public IReconciler getReconciler(ISourceViewer sourceViewer) {
+		return new MonoReconciler(new BooReconcilingStrategy(), false);
 	}
 	
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
