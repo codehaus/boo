@@ -31,7 +31,7 @@ class Application:
 		return entity.EntityType.ToString()
 		
 	def getInterpreter():
-		if _interpreter is not null:
+		if _interpreter is null:
 			_interpreter = InteractiveInterpreter(RememberLastValue: true, Print: writeLine)		
 		return _interpreter
 

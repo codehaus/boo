@@ -73,4 +73,8 @@ public class OutlineBuilder {
 		return node;
 	}
 
+	public void dispose() {
+		_messenger.dispose();
+	}
+
 }
