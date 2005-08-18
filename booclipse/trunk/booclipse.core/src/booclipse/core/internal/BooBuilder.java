@@ -269,7 +269,7 @@ public class BooBuilder extends IncrementalProjectBuilder {
 				if (GLOBAL_ERROR_PATTERN.matcher(line).matches()) {
 					addMarker(source.getFolder(), line, -1, IMarker.SEVERITY_ERROR);
 				} else {
-					System.err.println(line);
+					//System.err.println(line);
 				}
 			}
 		}
