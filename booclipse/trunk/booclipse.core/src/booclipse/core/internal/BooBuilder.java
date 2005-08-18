@@ -150,9 +150,9 @@ public class BooBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
-	private void deleteMarkers(IFolder folder) {
+	private void deleteMarkers(IResource resource) {
 		try {
-			folder.deleteMarkers(MARKER_TYPE, false, IResource.DEPTH_INFINITE);
+			resource.deleteMarkers(MARKER_TYPE, false, IResource.DEPTH_INFINITE);
 		} catch (CoreException e) {
 			BooCore.logException(e);
 		}
@@ -175,8 +175,22 @@ public class BooBuilder extends IncrementalProjectBuilder {
 	protected void incrementalBuild(IResourceDelta delta,
 			IProgressMonitor monitor) throws CoreException {
 		BooCore.logInfo("incremental build requested");
-		
 		compile(getBooProject().getAffectedAssemblySources(delta), monitor);
+	}
+	
+	boolean ensureCanBeBuilt(IBooAssemblySource source) {
+		if (validateRuntimePath()) return true;
+		addErrorMarker(source, "'" + source.getFolder().getName() + "' can't be build until the location for the mono runtime is set.");
+		return false;
+	}
+	
+	boolean validateRuntimePath() {
+		try {
+			return BooCore.RuntimePathStatus.OK == BooCore.validateRuntimePath(BooCore.getRuntimeLocation());
+		} catch (IOException e) {
+			BooCore.logException(e);
+		}
+		return false;
 	}
 
 	void compile(IBooAssemblySource[] sources, IProgressMonitor monitor) throws CoreException {
@@ -187,6 +201,7 @@ public class BooBuilder extends IncrementalProjectBuilder {
 	}
 	
 	void compile(IBooAssemblySource source, IProgressMonitor monitor) throws CoreException {
+		if (!ensureCanBeBuilt(source)) return;
 		try {
 			IFile[] files = source.getSourceFiles();
 			if (0 == files.length) return;
@@ -238,7 +253,6 @@ public class BooBuilder extends IncrementalProjectBuilder {
 		launcher.addSourceFiles(files);
 		return launcher.launch();
 	}
-	
 
 	Pattern LINE_ERROR_PATTERN = Pattern
 			.compile("(.+)\\((\\d+),\\d+\\):\\s(BC\\w\\d+):\\s(.+)");
@@ -267,12 +281,16 @@ public class BooBuilder extends IncrementalProjectBuilder {
 				++errorCount;
 			} else {
 				if (GLOBAL_ERROR_PATTERN.matcher(line).matches()) {
-					addMarker(source.getFolder(), line, -1, IMarker.SEVERITY_ERROR);
+					addErrorMarker(source, line);
 				} else {
 					//System.err.println(line);
 				}
 			}
 		}
 		return errorCount;
+	}
+
+	private void addErrorMarker(IBooAssemblySource source, String message) {
+		addMarker(source.getFolder(), message, -1, IMarker.SEVERITY_ERROR);
 	}
 }
