@@ -14,6 +14,7 @@ Export-Package: booclipse.core,
  booclipse.core.foundation,
  booclipse.core.interpreter,
  booclipse.core.launching,
- booclipse.core.model
+ booclipse.core.model,
+ booclipse.core.outline
 Bundle-ClassPath: lib/xstream/xstream-1.1.2.jar,
  booclipse.core.jar

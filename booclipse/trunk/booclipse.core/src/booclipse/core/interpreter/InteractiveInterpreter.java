@@ -25,7 +25,7 @@ public class InteractiveInterpreter {
 	IInterpreterListener _listener;
 	
 	public InteractiveInterpreter() throws CoreException {
-		_messenger = new ProcessMessenger(createLaunchConfiguration(), 0xB00);
+		_messenger = new ProcessMessenger(createLaunchConfiguration());
 		_messenger.setMessageHandler("EVAL-FINISHED", new IProcessMessageHandler() {
 			public void handle(ProcessMessage message) {
 				if (null == _listener) return;
@@ -95,7 +95,7 @@ public class InteractiveInterpreter {
 		_listener = listener;
 	}
 	
-	private ILaunchConfiguration createLaunchConfiguration() throws CoreException {
+	public static ILaunchConfiguration createLaunchConfiguration() throws CoreException {
 		ILaunchConfigurationType configType = BooLauncher.getLaunchConfigurationType(IBooLaunchConfigurationTypes.ID_INTERPRETER_SUPPORT);
 		ILaunchConfigurationWorkingCopy wc = configType.newInstance(null, "interpreter support");
 		wc.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);

@@ -17,7 +17,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.debug.core,
  org.eclipse.debug.ui,
  booclipse.core,
- org.eclipse.ui.console
+ org.eclipse.ui.console,
+ org.eclipse.ui.views
 Eclipse-AutoStart: true
 Bundle-ClassPath: booclipse.jar
 Export-Package: booclipse.ui,

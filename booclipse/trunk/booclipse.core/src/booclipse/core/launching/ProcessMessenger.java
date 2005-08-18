@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
 import booclipse.core.BooCore;
 
@@ -30,8 +31,6 @@ public class ProcessMessenger {
 	private final Object _socketMutex = new Object();
 	
 	private Socket _socket;
-
-	private int _portNumber;
 	
 	private final Map _handlers = new HashMap();
 
@@ -39,9 +38,8 @@ public class ProcessMessenger {
 	
 	private int _timeout = 3000;
 	
-	public ProcessMessenger(ILaunchConfiguration configuration, int portNumber) {
+	public ProcessMessenger(ILaunchConfiguration configuration) {
 		_configuration = configuration;
-		_portNumber = portNumber;
 	}
 	
 	public void setTimeout(int timeout) {
@@ -111,8 +109,11 @@ public class ProcessMessenger {
 		Job job = new Job("ProcessMessenger [" + _configuration.getName() + "]") {
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
-					_configuration.launch("run", monitor);
-					connect(monitor);
+					int portNumber = findAvailablePort();
+					ILaunchConfigurationWorkingCopy workingCopy = _configuration.getWorkingCopy();
+					workingCopy.setAttribute("port", portNumber);
+					workingCopy.launch("run", monitor);
+					listen(monitor, portNumber);
 				} catch (Exception x) {
 					//return new Status(Status.ERROR, BooCore.ID_PLUGIN, -1, x.getMessage(), x);
 					BooCore.logException(x);
@@ -124,12 +125,16 @@ public class ProcessMessenger {
 		job.setSystem(true);
 		job.schedule();
 	}
+	
+	private int findAvailablePort() {
+		return 0xB01;
+	}
 
-	private void connect(IProgressMonitor monitor) {
+	private void listen(IProgressMonitor monitor, int portNumber) {
 		try {
 			InetAddress address = InetAddress.getByName("127.0.0.1");
 			//ServerSocket server = new ServerSocket(_portNumber, 50, InetAddress.getLocalHost());
-			ServerSocket server = new ServerSocket(_portNumber, 50, address);
+			ServerSocket server = new ServerSocket(portNumber, 50, address);
 			server.setSoTimeout(_timeout);
 			try {
 				synchronized (_socketMutex) {
