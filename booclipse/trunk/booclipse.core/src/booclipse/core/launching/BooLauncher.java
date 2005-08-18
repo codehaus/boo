@@ -126,4 +126,8 @@ public class BooLauncher {
 		return DebugPlugin.getDefault().getLaunchManager();
 	}
 
+	public static String getProcessMessengerPort(ILaunchConfiguration configuration) throws CoreException {
+		return Integer.toString(configuration.getAttribute(IBooLaunchConfigurationConstants.ATTR_PROCESS_MESSENGER_PORT, 0xB00));
+	}
+
 }
