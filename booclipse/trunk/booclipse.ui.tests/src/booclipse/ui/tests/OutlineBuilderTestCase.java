@@ -1,21 +1,27 @@
 package booclipse.ui.tests;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.core.resources.IFile;
-
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 import booclipse.core.outline.OutlineBuilder;
 import booclipse.core.outline.OutlineNode;
 
 public class OutlineBuilderTestCase extends AbstractBooTestCase {
 	
+	private OutlineBuilder builder;
+
+	public void setUp() throws Exception {
+		super.setUp();
+		builder = new OutlineBuilder();
+	}
+	
+	protected void tearDown() throws Exception {
+		builder.dispose();
+		super.tearDown();
+	}
+	
 	public void testGetOutline() throws Exception {
-		OutlineBuilder builder = new OutlineBuilder();
 		OutlineNode outline = builder.getOutline(loadResourceAsString("Outline.boo"));
 		OutlineNode[] children = outline.children();
 		assertEquals(2, children.length);
