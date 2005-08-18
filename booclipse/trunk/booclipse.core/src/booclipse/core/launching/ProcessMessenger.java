@@ -25,6 +25,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
 import booclipse.core.BooCore;
+import booclipse.core.model.IBooLaunchConfigurationConstants;
 
 public class ProcessMessenger {
 	
@@ -122,7 +123,7 @@ public class ProcessMessenger {
 				try {
 					int portNumber = findAvailablePort();
 					ILaunchConfigurationWorkingCopy workingCopy = _configuration.getWorkingCopy();
-					workingCopy.setAttribute("port", portNumber);
+					workingCopy.setAttribute(IBooLaunchConfigurationConstants.ATTR_PROCESS_MESSENGER_PORT, portNumber);
 					workingCopy.launch("run", monitor);
 					listen(monitor, portNumber);
 				} catch (Exception x) {

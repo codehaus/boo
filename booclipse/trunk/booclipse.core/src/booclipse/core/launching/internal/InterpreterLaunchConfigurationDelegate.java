@@ -14,6 +14,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 
 import booclipse.core.BooCore;
+import booclipse.core.launching.BooLauncher;
 import booclipse.core.launching.RuntimeRunner;
 
 public class InterpreterLaunchConfigurationDelegate implements ILaunchConfigurationDelegate {
@@ -23,13 +24,13 @@ public class InterpreterLaunchConfigurationDelegate implements ILaunchConfigurat
 		try {
 			RuntimeRunner runner = new RuntimeRunner();
 			runner.add(getInterpreterLocation());
-			runner.add(Integer.toString(configuration.getAttribute("port", 0xB00)));
+			runner.add(BooLauncher.getProcessMessengerPort(configuration));
 			launch.addProcess(DebugPlugin.newProcess(launch, runner.launch(), configuration.getName()));
 		} catch (IOException e) {
 			BooCore.logException(e);
 		}	
 	}
-	
+
 	private String getInterpreterLocation() throws IOException {
 		URL url = BooCore.getDefault().find(new Path("bin/interpreter.exe"));
 		return new File(Platform.asLocalURL(url).getFile()).getCanonicalPath();
