@@ -33,7 +33,6 @@ public class BooReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 	}
 
 	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
-		System.out.println("reconcile1");
 	}
 
 	public void reconcile(IRegion partition) {
