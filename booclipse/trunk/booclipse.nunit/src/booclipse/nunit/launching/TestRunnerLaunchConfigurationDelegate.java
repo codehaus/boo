@@ -13,6 +13,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 
+import booclipse.core.launching.BooLauncher;
 import booclipse.core.launching.RuntimeRunner;
 import booclipse.nunit.NUnitPlugin;
 
@@ -23,6 +24,7 @@ public class TestRunnerLaunchConfigurationDelegate implements ILaunchConfigurati
 		try {
 			RuntimeRunner runner = new RuntimeRunner();
 			runner.add(getTestRunnerLocation());
+			runner.add(BooLauncher.getProcessMessengerPort(configuration));
 			launch.addProcess(DebugPlugin.newProcess(launch, runner.launch(), configuration.getName()));
 		} catch (IOException e) {
 			NUnitPlugin.logException(e);

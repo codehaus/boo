@@ -59,7 +59,8 @@ client.OnMessage("RUN") do (message as Message):
 	client.Send("TESTS-FINISHED", "")
 	client.Stop()
 	
+portNumber, = argv
 try:
-	client.Start(0xB01)
+	client.Start(int.Parse(portNumber))
 except x:
 	Console.Error.WriteLine(x)
