@@ -54,6 +54,9 @@ transient class ProcessMessengerClient(System.MarshalByRefObject):
 		while _running:
 			message = ReadMessage()
 			break if message is null
+			if message.Name == "QUIT":
+				Send(message)
+				break
 			DispatchMessage(message)
 			
 	private def DispatchMessage(message as Message):

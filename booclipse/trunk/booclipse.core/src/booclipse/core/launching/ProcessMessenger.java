@@ -77,18 +77,31 @@ public class ProcessMessenger {
 					throw new IOException("no connection from process");
 				}
 			}
-			message.writeTo(buffered(_socket.getOutputStream()));
+			doSend(message);
 		}
+	}
+
+	private void doSend(ProcessMessage message) throws IOException {
+		message.writeTo(buffered(_socket.getOutputStream()));
 	}
 
 	public void unload() {
 		synchronized (_socketMutex) {
 			if (null == _socket) return;
 			try {
-				_socket.close();
+				doSend(new ProcessMessage("QUIT", ""));
+				try {
+					_socketMutex.wait(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				if (null != _socket) {
+					_socket.close();
+				}
 			} catch (IOException e) {
 				BooCore.logException(e);
-			} finally {
+			}
+			finally {
 				_socket = null;
 			}
 		}
@@ -104,8 +117,6 @@ public class ProcessMessenger {
 	
 	private void launch() throws IOException {
 		
-		// TODO: stop job when process is stopped
-		// TODO: stop process when job is stopped
 		Job job = new Job("ProcessMessenger [" + _configuration.getName() + "]") {
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
@@ -127,9 +138,29 @@ public class ProcessMessenger {
 	}
 	
 	private int findAvailablePort() {
-		return 0xB01;
+		for (int i=0xB00; i<0xBFF; ++i) {
+			if (isPortAvailable(i)) return i;
+		}
+		return 0xABBA;
 	}
-
+	
+	private static boolean isPortAvailable(int port) {
+		try {
+			ServerSocket a = new ServerSocket(port-1);
+			try {
+				ServerSocket b = new ServerSocket(port);
+				b.close();
+				return true;
+			} catch (IOException ioe) {
+			}
+			finally {
+				a.close();
+			}
+		} catch (IOException ioe) {
+		}
+		return false;
+	}
+	
 	private void listen(IProgressMonitor monitor, int portNumber) {
 		try {
 			InetAddress address = InetAddress.getByName("127.0.0.1");
@@ -145,6 +176,12 @@ public class ProcessMessenger {
 					while (!monitor.isCanceled()) {
 						ProcessMessage message = readMessage(monitor);
 						if (null == message) break;
+						if (message.name.equals("QUIT")) {
+							synchronized (_socketMutex) {
+								_socketMutex.notify();
+							}
+							break;
+						}
 						handle(message);
 					}
 				} finally {
