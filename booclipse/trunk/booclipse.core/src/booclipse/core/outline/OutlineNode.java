@@ -10,6 +10,22 @@ public class OutlineNode {
 	
 	public static final String METHOD = "Method";
 
+	public static final String CONSTRUCTOR = "Constructor";
+
+	public static final String FIELD = "Field";
+
+	public static final String PROPERTY = "Property";
+
+	public static final String INTERFACE = "InterfaceDefinition";
+
+	public static final String CALLABLE = "CallableDefinition";
+
+	public static final String STRUCT = "StructDefinition";
+
+	public static final String ENUM = "EnumDefinition";
+
+	public static final String EVENT = "Event";
+
 	private String _name;
 
 	private ArrayList _children;
