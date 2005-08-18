@@ -29,12 +29,10 @@ public class TestRunner {
 	}
 
 	public void run() throws CoreException, IOException {
-		final int port = 0xB01;
-		
 		final IFile outputFile = _source.getOutputFile();
 		final NUnitPlugin plugin = NUnitPlugin.getDefault();
 		
-		ProcessMessenger messenger = new ProcessMessenger(createLaunchConfiguration(), port);
+		ProcessMessenger messenger = new ProcessMessenger(createLaunchConfiguration());
 		messenger.setMessageHandler("TESTS-STARTED",  new IProcessMessageHandler() {
 			public void handle(ProcessMessage message) {
 				int count = Integer.parseInt(message.payload.trim());

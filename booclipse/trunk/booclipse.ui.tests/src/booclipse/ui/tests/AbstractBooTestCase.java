@@ -65,14 +65,19 @@ public abstract class AbstractBooTestCase extends TestCase{
 	protected IFile copyResourceTo(String resource, String path) throws Exception {
 		IFile file = getProject().getFile(new Path(path).append(resource));
 		WorkspaceUtilities.createTree((IFolder) file.getParent());
-		InputStream source = getClass().getResourceAsStream("/resources/" + resource);
-		if (null == source) resourceNotFound(resource);
+		InputStream source = getResourceStream(resource);
 		try {
 			file.create(source, true, null);
 		} finally {
 			source.close();
 		}
 		return file;
+	}
+
+	protected InputStream getResourceStream(String resource) {
+		InputStream source = getClass().getResourceAsStream("/resources/" + resource);
+		if (null == source) resourceNotFound(resource);
+		return source;
 	}
 
 	private void resourceNotFound(String resource) {

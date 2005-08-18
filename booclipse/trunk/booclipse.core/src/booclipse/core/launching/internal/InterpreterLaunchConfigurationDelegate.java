@@ -23,6 +23,7 @@ public class InterpreterLaunchConfigurationDelegate implements ILaunchConfigurat
 		try {
 			RuntimeRunner runner = new RuntimeRunner();
 			runner.add(getInterpreterLocation());
+			runner.add(Integer.toString(configuration.getAttribute("port", 0xB00)));
 			launch.addProcess(DebugPlugin.newProcess(launch, runner.launch(), configuration.getName()));
 		} catch (IOException e) {
 			BooCore.logException(e);
