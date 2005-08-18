@@ -63,8 +63,7 @@ public class BooEditor extends TextEditor {
 	public Object getAdapter(Class required) {
 		if (IContentOutlinePage.class.equals(required)) {
 			if (_outlinePage == null) {
-				_outlinePage = new BooContentOutlinePage(
-						getDocumentProvider(), this);
+				_outlinePage = new BooContentOutlinePage(getDocumentProvider());
 				_outlinePage.setInput(getEditorInput());
 			}
 			return _outlinePage;

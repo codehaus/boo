@@ -38,4 +38,8 @@ public class BooDocumentProvider extends FileDocumentProvider {
 		}
 		return document;
 	}
+	
+	protected IDocument createEmptyDocument() {
+		return new BooDocument();
+	}
 }

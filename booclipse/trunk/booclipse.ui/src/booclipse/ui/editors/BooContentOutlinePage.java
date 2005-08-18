@@ -9,60 +9,80 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
+import booclipse.core.outline.OutlineNode;
+
 public class BooContentOutlinePage extends ContentOutlinePage {
 	
 	public class OutlineLabelProvider extends LabelProvider {
 		public String getText(Object element) {
-			return element.toString();
+			return ((OutlineNode)element).name();
 		}
 	}
 
 	public class OutlineContentProvider implements ITreeContentProvider {
 
 		public Object[] getChildren(Object parentElement) {
-			return null;
+			return ((OutlineNode)parentElement).children();
 		}
 
 		public Object getParent(Object element) {
-			// TODO Auto-generated method stub
-			return null;
+			return ((OutlineNode)element).parent();
 		}
 
 		public boolean hasChildren(Object element) {
-			// TODO Auto-generated method stub
-			return false;
+			return getChildren(element).length > 0;
 		}
 
 		public Object[] getElements(Object inputElement) {
-			return new String[] { "foo", "bar" };
+			return getChildren(inputElement);
 		}
 
 		public void dispose() {
-			// TODO Auto-generated method stub
-			
 		}
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			// TODO Auto-generated method stub
-			
 		}		
 	}
 
-	public BooContentOutlinePage(IDocumentProvider documentProvider, BooEditor editor) {
+	private IDocumentProvider _documentProvider;
+	private OutlineNode _outline;
+	private IEditorInput _editorInput;
+
+	public BooContentOutlinePage(IDocumentProvider documentProvider) {
+		_documentProvider = documentProvider;
 	}
 
 	public void setInput(IEditorInput editorInput) {
-		// TODO Auto-generated method stub
-		
+		_editorInput = editorInput;
 	}
 	
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		
+		setUpOutline();
+		
 		TreeViewer tree = getTreeViewer();
+		tree.setAutoExpandLevel(4);
 		tree.setContentProvider(new OutlineContentProvider());
 		tree.setLabelProvider(new OutlineLabelProvider());
-		tree.setInput(new Object());
+		tree.setInput(_outline);
+	}
+	
+	void setUpOutline() {
+		BooDocument document = (BooDocument) _documentProvider.getDocument(_editorInput);
+		_outline = document.getOutline();
+		document.addOutlineListener(new BooDocument.OutlineListener() {
+			public void outlineChanged(OutlineNode node) {
+				_outline = node;
+				
+				final TreeViewer tree = getTreeViewer();
+				tree.getControl().getDisplay().asyncExec(new Runnable() {
+					public void run() {
+						tree.setInput(_outline);
+					};
+				});
+			}
+		});
 	}
 
 }
