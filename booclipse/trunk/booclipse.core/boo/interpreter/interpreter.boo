@@ -1,7 +1,6 @@
 import System
 import System.IO
 import Boo.Lang.Compiler
-import Boo.Lang.Compiler.Ast
 import Boo.Lang.Compiler.TypeSystem
 import Boo.Lang.Interpreter
 import booclipse.core
@@ -68,27 +67,6 @@ class Application:
 			flush("OUTLINE-RESPONSE")
 	
 		_client.Start(portNumber)
-		
-class OutlineVisitor(DepthFirstVisitor):
-	
-	_writer as TextWriter
-	
-	def constructor(writer as TextWriter):
-		_writer = writer
-		
-	override def OnClassDefinition(node as ClassDefinition):
-		_writer.WriteLine("BEGIN-NODE")
-		WriteTypeMember(node)
-		Visit(node.Members)
-		_writer.WriteLine("END-NODE")
-		
-	override def OnMethod(node as Method):
-		_writer.WriteLine("BEGIN-NODE")
-		WriteTypeMember(node)
-		_writer.WriteLine("END-NODE")
-		
-	def WriteTypeMember(node as TypeMember):
-		_writer.WriteLine("${node.NodeType}:${node.Name}:${node.LexicalInfo.Line}")
 		
 portNumber, = argv
 Application().run(int.Parse(portNumber))

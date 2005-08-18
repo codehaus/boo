@@ -1,5 +1,8 @@
 package booclipse.ui.editors;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -9,18 +12,25 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 import booclipse.core.outline.OutlineNode;
+import booclipse.ui.BooUI;
+import booclipse.ui.IBooUIConstants;
 
 public class BooContentOutlinePage extends ContentOutlinePage {
 	
 	public class OutlineLabelProvider extends LabelProvider {
 		public String getText(Object element) {
 			return ((OutlineNode)element).name();
+		}
+		
+		public Image getImage(Object element) {
+			return (Image) _imageMap.get(((OutlineNode)element).type());
 		}
 	}
 
@@ -50,13 +60,14 @@ public class BooContentOutlinePage extends ContentOutlinePage {
 	}
 
 	private IDocumentProvider _documentProvider;
-	private OutlineNode _outline;
 	private IEditorInput _editorInput;
 	private BooEditor _editor;
-
+	private Map _imageMap = new HashMap();
+	
 	public BooContentOutlinePage(IDocumentProvider documentProvider, BooEditor editor) {
 		_documentProvider = documentProvider;
 		_editor = editor;
+		setUpImageMap();
 	}
 
 	public void setInput(IEditorInput editorInput) {
@@ -82,7 +93,7 @@ public class BooContentOutlinePage extends ContentOutlinePage {
 		tree.setAutoExpandLevel(4);
 		tree.setContentProvider(new OutlineContentProvider());
 		tree.setLabelProvider(new OutlineLabelProvider());
-		tree.setInput(_outline);
+		tree.setInput(getDocument().getOutline());
 		tree.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				Object selected = ((IStructuredSelection) event.getSelection()).getFirstElement();
@@ -94,16 +105,13 @@ public class BooContentOutlinePage extends ContentOutlinePage {
 	}
 	
 	void setUpOutline() {
-		BooDocument document = getDocument();
-		_outline = document.getOutline();
+		final BooDocument document = getDocument();
 		document.addOutlineListener(new BooDocument.OutlineListener() {
 			public void outlineChanged(OutlineNode node) {
-				_outline = node;
-				
 				final TreeViewer tree = getTreeViewer();
 				tree.getControl().getDisplay().asyncExec(new Runnable() {
 					public void run() {
-						tree.setInput(_outline);
+						tree.setInput(document.getOutline());
 					};
 				});
 			}
@@ -113,5 +121,21 @@ public class BooContentOutlinePage extends ContentOutlinePage {
 	private BooDocument getDocument() {
 		return (BooDocument) _documentProvider.getDocument(_editorInput);
 	}
-
+	
+	void setUpImageMap() {
+		mapImage(OutlineNode.CLASS, IBooUIConstants.CLASS);
+		mapImage(OutlineNode.METHOD, IBooUIConstants.METHOD);
+		mapImage(OutlineNode.CONSTRUCTOR, IBooUIConstants.METHOD);
+		mapImage(OutlineNode.FIELD, IBooUIConstants.FIELD);
+		mapImage(OutlineNode.PROPERTY, IBooUIConstants.PROPERTY);
+		mapImage(OutlineNode.EVENT, IBooUIConstants.EVENT);
+		mapImage(OutlineNode.INTERFACE, IBooUIConstants.INTERFACE);
+		mapImage(OutlineNode.CALLABLE, IBooUIConstants.CALLABLE);
+		mapImage(OutlineNode.STRUCT, IBooUIConstants.STRUCT);
+		mapImage(OutlineNode.ENUM, IBooUIConstants.ENUM);
+	}
+	
+	void mapImage(String entityType, String key) {
+		_imageMap.put(entityType, BooUI.getImage(key));
+	}
 }
