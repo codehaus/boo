@@ -1,6 +1,7 @@
 namespace booclipse.core
 
 import System.IO
+import System.Threading
 import System.Net.Sockets
 
 class Message:
@@ -25,7 +26,7 @@ transient class ProcessMessengerClient(System.MarshalByRefObject):
 		
 	def Start(portNumber as int):
 		try:
-			using _client = TcpClient("127.0.0.1", portNumber):
+			using _client = Connect(portNumber):
 				stream = _client.GetStream()
 				using _reader = StreamReader(stream), _writer = StreamWriter(stream):
 					_running = true
@@ -49,6 +50,13 @@ transient class ProcessMessengerClient(System.MarshalByRefObject):
 
 	def Send([required] name as string, [required] payload as string):		
 		self.Send(Message(Name: name, Payload: payload))
+		
+	private def Connect(portNumber as int):
+		for i in range(3):
+			try:
+				return TcpClient("127.0.0.1", portNumber)
+			except x:
+				Thread.Sleep(500ms)
 				
 	private def MessageLoop():
 		while _running:

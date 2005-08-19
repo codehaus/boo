@@ -15,6 +15,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
@@ -37,7 +38,7 @@ public class ProcessMessenger {
 
 	private ILaunchConfiguration _configuration;
 	
-	private int _timeout = 3000;
+	private int _timeout = 5000;
 	
 	public ProcessMessenger(ILaunchConfiguration configuration) {
 		_configuration = configuration;
@@ -69,7 +70,9 @@ public class ProcessMessenger {
 			if (null == _socket) {
 				launch();
 				try {
-					_socketMutex.wait(_timeout);
+					// always wait a little longer
+					// than the socket timeout
+					_socketMutex.wait(_timeout*2);
 				} catch (InterruptedException x) {
 					BooCore.logException(x);
 					throw new RuntimeException(x);
@@ -121,16 +124,19 @@ public class ProcessMessenger {
 		Job job = new Job("ProcessMessenger [" + _configuration.getName() + "]") {
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
-					int portNumber = findAvailablePort();
-					ILaunchConfigurationWorkingCopy workingCopy = _configuration.getWorkingCopy();
-					workingCopy.setAttribute(IBooLaunchConfigurationConstants.ATTR_PROCESS_MESSENGER_PORT, portNumber);
-					workingCopy.launch("run", monitor);
+					final int portNumber = findAvailablePort();
+					launchConfiguration(portNumber, monitor);
 					listen(monitor, portNumber);
 				} catch (Exception x) {
-					//return new Status(Status.ERROR, BooCore.ID_PLUGIN, -1, x.getMessage(), x);
 					BooCore.logException(x);
 				}
 				return Status.OK_STATUS;
+			}
+
+			private void launchConfiguration(int portNumber, IProgressMonitor monitor) throws CoreException {
+				ILaunchConfigurationWorkingCopy workingCopy = _configuration.getWorkingCopy();
+				workingCopy.setAttribute(IBooLaunchConfigurationConstants.ATTR_PROCESS_MESSENGER_PORT, portNumber);
+				workingCopy.launch("run", monitor);
 			}
 		};
 		job.setPriority(Job.LONG);
@@ -165,7 +171,6 @@ public class ProcessMessenger {
 	private void listen(IProgressMonitor monitor, int portNumber) {
 		try {
 			InetAddress address = InetAddress.getByName("127.0.0.1");
-			//ServerSocket server = new ServerSocket(_portNumber, 50, InetAddress.getLocalHost());
 			ServerSocket server = new ServerSocket(portNumber, 50, address);
 			server.setSoTimeout(_timeout);
 			try {
