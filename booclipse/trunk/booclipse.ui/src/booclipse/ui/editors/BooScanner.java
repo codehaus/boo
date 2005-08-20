@@ -74,6 +74,7 @@ public class BooScanner extends RuleBasedScanner {
 	
 	static final String[] KEYWORDS = new String[] {
 		
+		"ast",
 		"break",
 		"callable",
 		"cast",
