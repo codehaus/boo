@@ -1,3 +1,5 @@
+namespace booclipse.server
+
 import System.IO
 import Boo.Lang.Compiler.Ast
 
