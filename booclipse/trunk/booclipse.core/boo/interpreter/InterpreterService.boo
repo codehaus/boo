@@ -1,3 +1,5 @@
+namespace booclipse.server
+
 import System
 import System.IO
 import Boo.Lang.Compiler
@@ -5,19 +7,12 @@ import Boo.Lang.Compiler.TypeSystem
 import Boo.Lang.Interpreter
 import booclipse.core
 
-class Application:
-	_client = ProcessMessengerClient()
-	_buffer = StringWriter()
+class InterpreterService(AbstractService):
+	
 	_interpreter as InteractiveInterpreter
 	
-	def writeLine(line):
-		_buffer.WriteLine(line)
-		
-	def resetBuffer():
-		_buffer.GetStringBuilder().Length = 0
-		
-	def flush(name as string):
-		_client.Send(Message(Name: name, Payload: _buffer.ToString()))
+	def constructor(client as ProcessMessengerClient):
+		super(client)
 		
 	def getEntityType(entity as IEntity):
 		if EntityType.Type == entity.EntityType:
@@ -34,7 +29,7 @@ class Application:
 			_interpreter = InteractiveInterpreter(RememberLastValue: true, Print: writeLine)		
 		return _interpreter
 
-	def run(portNumber as int):	
+	def registerMessageHandlers():	
 		_client.OnMessage("EVAL") do (message as Message):
 			resetBuffer()
 			try:
@@ -52,21 +47,3 @@ class Application:
 			except x:
 				Console.Error.WriteLine(x)
 			flush("PROPOSALS")
-			
-		_client.OnMessage("GET-OUTLINE") do (message as Message):
-			resetBuffer()
-			try:
-				compiler = BooCompiler()
-				compiler.Parameters.Pipeline = Pipelines.Parse()
-				compiler.Parameters.Input.Add(Boo.Lang.Compiler.IO.StringInput("outline", message.Payload))
-				module = compiler.Run().CompileUnit.Modules[0]
-				module.Accept(OutlineVisitor(_buffer))
-			except x:
-				Console.Error.WriteLine(x)
-				resetBuffer()
-			flush("OUTLINE-RESPONSE")
-	
-		_client.Start(portNumber)
-		
-portNumber, = argv
-Application().run(int.Parse(portNumber))
