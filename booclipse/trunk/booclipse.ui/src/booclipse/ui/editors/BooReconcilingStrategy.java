@@ -22,7 +22,7 @@ public class BooReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 	
 	public BooReconcilingStrategy() {
 		try {
-			_builder = new OutlineBuilder();
+			_builder = OutlineBuilder.getInstance();
 		} catch (CoreException e) {
 			BooUI.logException(e);
 		}

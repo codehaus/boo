@@ -13,7 +13,7 @@ public class OutlineBuilderTestCase extends AbstractBooTestCase {
 
 	public void setUp() throws Exception {
 		super.setUp();
-		builder = new OutlineBuilder();
+		builder = OutlineBuilder.getInstance();
 	}
 	
 	protected void tearDown() throws Exception {
