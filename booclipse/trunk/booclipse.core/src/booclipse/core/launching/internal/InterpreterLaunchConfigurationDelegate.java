@@ -32,7 +32,7 @@ public class InterpreterLaunchConfigurationDelegate implements ILaunchConfigurat
 	}
 
 	private String getInterpreterLocation() throws IOException {
-		URL url = BooCore.getDefault().find(new Path("bin/interpreter.exe"));
+		URL url = BooCore.getDefault().find(new Path("bin/booclipse.server.exe"));
 		return new File(Platform.asLocalURL(url).getFile()).getCanonicalPath();
 	}
 
