@@ -109,7 +109,7 @@ public class BooAssemblySource implements IBooAssemblySource {
 		final List files = new ArrayList();
 		IResourceVisitor visitor = new IResourceVisitor() {
 			public boolean visit(IResource resource) throws CoreException {
-				if (isBooFile(resource)) {
+				if (isBooFile(resource) && resource.exists()) {
 					files.add(resource);
 				}
 				return true;
