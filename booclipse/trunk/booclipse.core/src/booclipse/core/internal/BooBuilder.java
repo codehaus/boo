@@ -46,6 +46,8 @@ import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import booclipse.core.BooAssemblyReferenceVisitor;
 import booclipse.core.BooCore;
 import booclipse.core.foundation.WorkspaceUtilities;
+import booclipse.core.model.IAssemblySourceReference;
+import booclipse.core.model.IBooAssemblyReference;
 import booclipse.core.model.IBooAssemblySource;
 import booclipse.core.model.IBooProject;
 import booclipse.core.model.ILocalAssemblyReference;
@@ -178,9 +180,36 @@ public class BooBuilder extends IncrementalProjectBuilder {
 		compile(getBooProject().getAffectedAssemblySources(delta), monitor);
 	}
 	
-	boolean ensureCanBeBuilt(IBooAssemblySource source) {
-		if (validateRuntimePath()) return true;
-		addErrorMarker(source, "'" + source.getFolder().getName() + "' can't be build until the location for the mono runtime is set.");
+	boolean ensureCanBeBuilt(IBooAssemblySource source) throws CoreException {
+		if (!validateRuntimePath())	return cantBeBuilt(source, "the location for the mono runtime is not set.");
+		IBooAssemblyReference[] references = source.getReferences();
+		for (int i=0; i<references.length; ++i) {
+			IBooAssemblyReference r = references[i];
+			if (r instanceof IAssemblySourceReference) {
+				if (hasErrors(((IAssemblySourceReference)r).getAssemblySource())) {
+					return cantBeBuilt(source, "reference '" + r.getAssemblyName() + "' contains errors.");
+				}
+			} else if (r instanceof ILocalAssemblyReference) {
+				if (!((ILocalAssemblyReference)r).getFile().exists()) {
+					return cantBeBuilt(source, "reference '" + r.getAssemblyName() + "' cannot be found.");
+				}
+			}
+		}
+		return true;
+	}
+
+	private boolean hasErrors(IBooAssemblySource source) throws CoreException {
+		IMarker[] markers = source.getFolder().findMarkers(MARKER_TYPE, false, IResource.DEPTH_INFINITE);
+		for (int i=0; i<markers.length; ++i) {
+			if (IMarker.SEVERITY_ERROR == markers[i].getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean cantBeBuilt(IBooAssemblySource source, String reason) {
+		addErrorMarker(source, "'" + source.getFolder().getName() + "' can't be built because " + reason);
 		return false;
 	}
 	
@@ -201,6 +230,9 @@ public class BooBuilder extends IncrementalProjectBuilder {
 	}
 	
 	void compile(IBooAssemblySource source, IProgressMonitor monitor) throws CoreException {
+		
+		deleteMarkers(source.getFolder());
+		
 		if (!ensureCanBeBuilt(source)) return;
 		try {
 			IFile[] files = source.getSourceFiles();
@@ -261,7 +293,6 @@ public class BooBuilder extends IncrementalProjectBuilder {
 			.compile("^BCE.+");
 
 	int reportErrors(IBooAssemblySource source, Process p) throws IOException {
-		deleteMarkers(source.getFolder());
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(p
 				.getInputStream(), Charset.forName("utf-8")));
