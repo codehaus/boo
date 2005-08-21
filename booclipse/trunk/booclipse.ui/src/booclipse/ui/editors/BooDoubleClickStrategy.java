@@ -21,71 +21,20 @@ package booclipse.ui.editors;
 import org.eclipse.jface.text.*;
 
 public class BooDoubleClickStrategy implements ITextDoubleClickStrategy {
-	protected ITextViewer fText;
+	protected ITextViewer _viewer;
 
 	public void doubleClicked(ITextViewer part) {
 		int pos = part.getSelectedRange().x;
 
-		if (pos < 0)
-			return;
+		if (pos < 0) return;
 
-		fText = part;
-
-		if (!selectComment(pos)) {
-			selectWord(pos);
-		}
+		_viewer = part;
+		selectWord(pos);
 	}
-	protected boolean selectComment(int caretPos) {
-		IDocument doc = fText.getDocument();
-		int startPos, endPos;
-
-		try {
-			int pos = caretPos;
-			char c = ' ';
-
-			while (pos >= 0) {
-				c = doc.getChar(pos);
-				if (c == '\\') {
-					pos -= 2;
-					continue;
-				}
-				if (c == Character.LINE_SEPARATOR || c == '\"')
-					break;
-				--pos;
-			}
-
-			if (c != '\"')
-				return false;
-
-			startPos = pos;
-
-			pos = caretPos;
-			int length = doc.getLength();
-			c = ' ';
-
-			while (pos < length) {
-				c = doc.getChar(pos);
-				if (c == Character.LINE_SEPARATOR || c == '\"')
-					break;
-				++pos;
-			}
-			if (c != '\"')
-				return false;
-
-			endPos = pos;
-
-			int offset = startPos + 1;
-			int len = endPos - offset;
-			fText.setSelectedRange(offset, len);
-			return true;
-		} catch (BadLocationException x) {
-		}
-
-		return false;
-	}
+	
 	protected boolean selectWord(int caretPos) {
 
-		IDocument doc = fText.getDocument();
+		IDocument doc = _viewer.getDocument();
 		int startPos, endPos;
 
 		try {
@@ -125,6 +74,6 @@ public class BooDoubleClickStrategy implements ITextDoubleClickStrategy {
 	private void selectRange(int startPos, int stopPos) {
 		int offset = startPos + 1;
 		int length = stopPos - offset;
-		fText.setSelectedRange(offset, length);
+		_viewer.setSelectedRange(offset, length);
 	}
 }
