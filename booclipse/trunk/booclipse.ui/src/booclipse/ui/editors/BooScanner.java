@@ -100,8 +100,13 @@ public class BooScanner extends RuleBasedScanner {
 	};
 	
 	static final String[] PRIMITIVES = new String[] {
-		"bool", "byte", "char", "short", "ushort", "int", "uint",
-		"string", "object", "single", "double", "void",
+		"bool", "byte", "char",
+		"short", "ushort",
+		"int", "uint",
+		"long", "ulong",
+		"string", "object",
+		"single", "double",
+		"void",
 		"regex", "timespan", "date"
 	};
 	
