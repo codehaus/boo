@@ -2,8 +2,6 @@
 		* Image
 		* Better Layout
 		* Output Type
-//TODO: do not try to build assembly source when sources on which it depends fail to build
-//TODO: Outline (with background process)
 //TODO: 'Build Path'/'Use as Assembly Source' should add BooNature to a project
 //TODO: byecycle integration
 //TODO: New Boo TestFixture Wizard (automatically add nunit.framework.dll reference)
