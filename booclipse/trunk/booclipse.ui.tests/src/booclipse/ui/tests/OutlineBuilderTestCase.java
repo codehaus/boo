@@ -4,16 +4,16 @@ import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
 
-import booclipse.core.compiler.OutlineBuilder;
+import booclipse.core.compiler.CompilerServices;
 import booclipse.core.compiler.OutlineNode;
 
 public class OutlineBuilderTestCase extends AbstractBooTestCase {
 	
-	private OutlineBuilder builder;
+	private CompilerServices builder;
 
 	public void setUp() throws Exception {
 		super.setUp();
-		builder = OutlineBuilder.getInstance();
+		builder = CompilerServices.getInstance();
 	}
 	
 	protected void tearDown() throws Exception {
