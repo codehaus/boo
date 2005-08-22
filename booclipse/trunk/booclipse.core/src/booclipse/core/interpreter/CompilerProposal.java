@@ -3,7 +3,7 @@
  */
 package booclipse.core.interpreter;
 
-public class InterpreterProposal {
+public class CompilerProposal {
 	
 	String _entityType;
 	
@@ -11,7 +11,7 @@ public class InterpreterProposal {
 	
 	String _description;
 	
-	public InterpreterProposal(String entityType, String name, String description) {
+	public CompilerProposal(String entityType, String name, String description) {
 		_entityType = entityType;
 		_name = name;
 		_description = description;

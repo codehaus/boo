@@ -7,7 +7,7 @@ import org.apache.commons.io.IOUtils;
 import booclipse.core.compiler.CompilerServices;
 import booclipse.core.compiler.OutlineNode;
 
-public class OutlineBuilderTestCase extends AbstractBooTestCase {
+public class CompilerServicesTestCase extends AbstractBooTestCase {
 	
 	private CompilerServices builder;
 
@@ -32,6 +32,10 @@ public class OutlineBuilderTestCase extends AbstractBooTestCase {
 		assertEquals("global", children[1].name());
 		assertEquals(17, children[1].line());
 		assertEquals(OutlineNode.METHOD, children[1].type());
+	}
+	
+	public void testGetCompletionProposals() {
+		
 	}
 
 	private String loadResourceAsString(String resource) throws IOException {

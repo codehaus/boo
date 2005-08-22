@@ -39,7 +39,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import booclipse.core.interpreter.IInterpreterListener;
 import booclipse.core.interpreter.InteractiveInterpreter;
-import booclipse.core.interpreter.InterpreterProposal;
+import booclipse.core.interpreter.CompilerProposal;
 import booclipse.ui.BooUI;
 import booclipse.ui.IBooUIConstants;
 
@@ -235,7 +235,7 @@ public class BooInteractiveInterpreterView extends ViewPart {
 	class InterpreterContentAssistProcessor implements IContentAssistProcessor {
 		
 		Map _imageMap = new HashMap();
-		private InterpreterProposal[] _cachedProposals;
+		private CompilerProposal[] _cachedProposals;
 		private String _cachedLine;
 		
 		public InterpreterContentAssistProcessor() {
@@ -263,7 +263,7 @@ public class BooInteractiveInterpreterView extends ViewPart {
 			if (null != proposals) return proposals;
 			
 			try {
-				InterpreterProposal[] found = _interpreter.getCompletionProposals(line, offset);
+				CompilerProposal[] found = _interpreter.getCompletionProposals(line, offset);
 				proposals = newCompletionProposalArray("", offset, found);
 				_cachedLine = line;
 				_cachedProposals = found;
@@ -274,7 +274,7 @@ public class BooInteractiveInterpreterView extends ViewPart {
 			return new ICompletionProposal[0];
 		}
 
-		private ICompletionProposal[] newCompletionProposalArray(String existingPrefix, int offset, InterpreterProposal[] found) {
+		private ICompletionProposal[] newCompletionProposalArray(String existingPrefix, int offset, CompilerProposal[] found) {
 			ICompletionProposal[] proposals;
 			proposals = new ICompletionProposal[found.length];
 			for (int i=0; i<found.length; ++i) {
@@ -283,7 +283,7 @@ public class BooInteractiveInterpreterView extends ViewPart {
 			return proposals;
 		}
 
-		private CompletionProposal newCompletionProposal(String existingPrefix, int offset, InterpreterProposal proposal) {
+		private CompletionProposal newCompletionProposal(String existingPrefix, int offset, CompilerProposal proposal) {
 			String name = proposal.getName();
 			final String description = isMember(proposal.getEntityType())
 				? proposal.getDescription()
@@ -314,7 +314,7 @@ public class BooInteractiveInterpreterView extends ViewPart {
 		private ICompletionProposal[] filterCachedProposals(String prefix, int offset) {
 			ArrayList filtered = new ArrayList();
 			for (int i=0; i<_cachedProposals.length; ++i) {
-				InterpreterProposal item = _cachedProposals[i];
+				CompilerProposal item = _cachedProposals[i];
 				String name = item.getName();
 				if (name.startsWith(prefix)) {
 					filtered.add(newCompletionProposal(prefix, offset, item));
@@ -323,7 +323,7 @@ public class BooInteractiveInterpreterView extends ViewPart {
 			return (ICompletionProposal[]) filtered.toArray(new ICompletionProposal[filtered.size()]);
 		}
 
-		private Image getImage(InterpreterProposal proposal) {
+		private Image getImage(CompilerProposal proposal) {
 			return (Image)_imageMap.get(proposal.getEntityType());
 		}
 
