@@ -10,19 +10,19 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 
-import booclipse.core.compiler.OutlineBuilder;
+import booclipse.core.compiler.CompilerServices;
 import booclipse.core.compiler.OutlineNode;
 import booclipse.ui.BooUI;
 
 public class BooReconcilingStrategy implements IReconcilingStrategy, IReconcilingStrategyExtension {
 	
-	private OutlineBuilder _builder;
+	private CompilerServices _builder;
 
 	private BooDocument _document;
 	
 	public BooReconcilingStrategy() {
 		try {
-			_builder = OutlineBuilder.getInstance();
+			_builder = CompilerServices.getInstance();
 		} catch (CoreException e) {
 			BooUI.logException(e);
 		}

@@ -11,16 +11,16 @@ import booclipse.core.launching.IProcessMessageHandler;
 import booclipse.core.launching.ProcessMessage;
 import booclipse.core.launching.ProcessMessenger;
 
-public class OutlineBuilder {
+public class CompilerServices {
 
-	public static synchronized OutlineBuilder getInstance() throws CoreException {
+	public static synchronized CompilerServices getInstance() throws CoreException {
 		if (null == _instance) {
-			_instance = new OutlineBuilder();
+			_instance = new CompilerServices();
 		}
 		return _instance;
 	}
 	
-	private static OutlineBuilder _instance;
+	private static CompilerServices _instance;
 	
 	private ProcessMessenger _messenger;
 	
@@ -28,7 +28,7 @@ public class OutlineBuilder {
 	
 	OutlineNode _outline;
 
-	private OutlineBuilder() throws CoreException {
+	private CompilerServices() throws CoreException {
 		_messenger = new ProcessMessenger(InteractiveInterpreter.createLaunchConfiguration());
 		_messenger.setMessageHandler("OUTLINE-RESPONSE", new IProcessMessageHandler() {
 			public void handle(ProcessMessage message) {
