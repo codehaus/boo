@@ -11,10 +11,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.core
 Eclipse-AutoStart: true
 Export-Package: booclipse.core,
+ booclipse.core.compiler,
  booclipse.core.foundation,
  booclipse.core.interpreter,
  booclipse.core.launching,
- booclipse.core.model,
- booclipse.core.outline
+ booclipse.core.model
 Bundle-ClassPath: lib/xstream/xstream-1.1.2.jar,
  booclipse.core.jar
