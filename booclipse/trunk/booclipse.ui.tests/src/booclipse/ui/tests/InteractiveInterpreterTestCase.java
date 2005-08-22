@@ -3,7 +3,7 @@ package booclipse.ui.tests;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
-import booclipse.core.interpreter.InterpreterProposal;
+import booclipse.core.interpreter.CompilerProposal;
 import booclipse.core.interpreter.InteractiveInterpreter;
 import booclipse.core.interpreter.IInterpreterListener;
 
@@ -47,7 +47,7 @@ public class InteractiveInterpreterTestCase extends TestCase {
 			_interpreter.eval("class Foo:\n\tdef foo():\n\t\tpass\nf = Foo()");
 			mutex.wait(3000);
 		}
-		InterpreterProposal[] proposals = _interpreter.getCompletionProposals("f.", 2);
+		CompilerProposal[] proposals = _interpreter.getCompletionProposals("f.", 2);
 		String[] expected = new String[] {
 				"foo",
 				"Equals",

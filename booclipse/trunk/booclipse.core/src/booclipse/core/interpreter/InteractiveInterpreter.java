@@ -12,6 +12,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
 import booclipse.core.BooCore;
+import booclipse.core.compiler.CompilerProposalsMessageHandler;
 import booclipse.core.launching.BooLauncher;
 import booclipse.core.launching.IProcessMessageHandler;
 import booclipse.core.launching.ProcessMessage;
@@ -19,13 +20,17 @@ import booclipse.core.launching.ProcessMessenger;
 import booclipse.core.model.IBooLaunchConfigurationTypes;
 
 public class InteractiveInterpreter {
-
+	
 	ProcessMessenger _messenger;
 	
 	IInterpreterListener _listener;
+
+	private CompilerProposalsMessageHandler _proposalsHandler;
 	
 	public InteractiveInterpreter() throws CoreException {
 		_messenger = new ProcessMessenger(createLaunchConfiguration());
+		_proposalsHandler = new CompilerProposalsMessageHandler();
+		_messenger.setMessageHandler("PROPOSALS", _proposalsHandler);
 		_messenger.setMessageHandler("EVAL-FINISHED", new IProcessMessageHandler() {
 			public void handle(ProcessMessage message) {
 				if (null == _listener) return;
@@ -54,31 +59,16 @@ public class InteractiveInterpreter {
 		_messenger.dispose();
 	}
 	
-	public InterpreterProposal[] getCompletionProposals(String code, int offset) throws IOException {
-		final ArrayList proposals = new ArrayList();
-		_messenger.setMessageHandler("PROPOSALS", new IProcessMessageHandler() {
-			public void handle(ProcessMessage response) {
-				synchronized (proposals) {
-					BufferedReader reader = new BufferedReader(new StringReader(response.payload));	
-					String line;
-					try {
-						while (null != (line = reader.readLine())) {
-							String[] parts = line.split(":");
-							proposals.add(new InterpreterProposal(parts[0], parts[1], parts[2]));
-						}
-					} catch (IOException unexpected) {
-						BooCore.logException(unexpected);
-					}
-					proposals.notify();
-				}
-			}
-		});
+	public CompilerProposal[] getCompletionProposals(String code, int offset) throws IOException {
 		
+		CompilerProposal[] proposals = null;
 		try {
-			synchronized (proposals) {
+			Object lock = _proposalsHandler.getMessageLock();
+			synchronized (lock) {
 				try {
 					_messenger.send(createMessage("GET-PROPOSALS", code + "__codecomplete__"));				
-					proposals.wait(_messenger.getTimeout());
+					lock.wait(_messenger.getTimeout());
+					proposals = _proposalsHandler.getProposals();
 				} catch (Exception e) {
 					BooCore.logException(e);
 				}
@@ -87,7 +77,7 @@ public class InteractiveInterpreter {
 			_messenger.setMessageHandler("PROPOSALS", null);
 		}
 		
-		return (InterpreterProposal[]) proposals.toArray(new InterpreterProposal[proposals.size()]);
+		return proposals;
 	}
 
 	public void addListener(IInterpreterListener listener) {
