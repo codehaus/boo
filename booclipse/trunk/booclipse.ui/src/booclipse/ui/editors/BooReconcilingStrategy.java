@@ -10,8 +10,8 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 
-import booclipse.core.outline.OutlineBuilder;
-import booclipse.core.outline.OutlineNode;
+import booclipse.core.compiler.OutlineBuilder;
+import booclipse.core.compiler.OutlineNode;
 import booclipse.ui.BooUI;
 
 public class BooReconcilingStrategy implements IReconcilingStrategy, IReconcilingStrategyExtension {

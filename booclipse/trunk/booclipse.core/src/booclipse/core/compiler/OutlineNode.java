@@ -1,4 +1,4 @@
-package booclipse.core.outline;
+package booclipse.core.compiler;
 
 import java.util.ArrayList;
 
