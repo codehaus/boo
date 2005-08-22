@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
 
-import booclipse.core.outline.OutlineBuilder;
-import booclipse.core.outline.OutlineNode;
+import booclipse.core.compiler.OutlineBuilder;
+import booclipse.core.compiler.OutlineNode;
 
 public class OutlineBuilderTestCase extends AbstractBooTestCase {
 	

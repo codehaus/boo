@@ -2,7 +2,7 @@ package booclipse.ui.editors;
 
 import org.eclipse.jface.text.Document;
 
-import booclipse.core.outline.OutlineNode;
+import booclipse.core.compiler.OutlineNode;
 
 public class BooDocument extends Document {
 	

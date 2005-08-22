@@ -18,7 +18,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
-import booclipse.core.outline.OutlineNode;
+import booclipse.core.compiler.OutlineNode;
 import booclipse.ui.BooUI;
 import booclipse.ui.IBooUIConstants;
 
