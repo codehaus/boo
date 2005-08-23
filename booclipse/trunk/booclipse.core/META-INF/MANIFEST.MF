@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Boo Core Plug-in
 Bundle-SymbolicName: booclipse.core; singleton:=true
-Bundle-Version: 1.0.18
+Bundle-Version: 1.0.19
 Bundle-Activator: booclipse.core.BooCore
 Bundle-Vendor: Rodrigo B. de Oliveira
 Bundle-Localization: plugin
