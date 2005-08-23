@@ -29,6 +29,8 @@ public class CompilerProposalsMessageHandler implements IProcessMessageHandler {
 	public void handle(ProcessMessage response) {
 		Object lock = getMessageLock();
 		synchronized (lock) {
+			_proposals.clear();
+			
 			String messagePayload = response.payload;
 			BufferedReader reader = new BufferedReader(new StringReader(messagePayload));	
 			String line;

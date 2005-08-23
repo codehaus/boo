@@ -18,6 +18,7 @@
  */
 package booclipse.ui.editors;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
@@ -25,6 +26,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.reconciler.IReconciler;
@@ -38,6 +41,10 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
+import booclipse.core.compiler.CompilerServices;
+import booclipse.ui.BooUI;
+import booclipse.ui.views.BooContentAssistProcessor;
+
 public class BooSourceViewerConfiguration extends SourceViewerConfiguration {
 	private BooDoubleClickStrategy _doubleClickStrategy;
 	private BooScanner _scanner;
@@ -46,6 +53,7 @@ public class BooSourceViewerConfiguration extends SourceViewerConfiguration {
 	private StringScanner _tqsScanner;
 	private StringScanner _dqsScanner;
 	private RegexScanner _regexScanner;
+	private ContentAssistant _assistant;
 
 	public BooSourceViewerConfiguration(ISharedTextColors colors) {
 		this._colorManager = colors;
@@ -56,6 +64,24 @@ public class BooSourceViewerConfiguration extends SourceViewerConfiguration {
 	
 	public IReconciler getReconciler(ISourceViewer sourceViewer) {
 		return new MonoReconciler(new BooReconcilingStrategy(), false);
+	}
+	
+	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+		if (null == _assistant) {
+			ContentAssistant assistant = new ContentAssistant();
+			try {
+				assistant.setContentAssistProcessor(
+						new BooEditorContentAssistProcessor(),
+						IDocument.DEFAULT_CONTENT_TYPE);
+			} catch (CoreException e) {
+				BooUI.logException(e);
+				return null;
+			}
+			assistant.enableAutoActivation(true);
+			_assistant = assistant;
+		}
+		_assistant.install(sourceViewer);
+		return _assistant;
 	}
 	
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
