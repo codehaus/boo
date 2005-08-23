@@ -26,7 +26,7 @@ class ContentAssistProcessor(ProcessMethodBodiesWithDuckTyping):
 
 	[getter(Members)]
 	_members = array(IEntity, 0)
-	
+
 	_code as string
 	
 	def constructor(code as string):
@@ -47,15 +47,21 @@ class ContentAssistProcessor(ProcessMethodBodiesWithDuckTyping):
 		return array(
 				item
 				for item in members
-				unless IsSpecial(item) or not IsPublic(item))
+				unless IsSpecial(item) or not IsAccessible(item))
 
 	def IsSpecial(entity as IEntity):
 		for prefix in ".", "___", "add_", "remove_", "raise_", "get_", "set_":
 			return true if entity.Name.StartsWith(prefix)
 			
-	def IsPublic(entity as IEntity):
-		member = entity as IMember
-		return member is null or member.IsPublic
+	def IsAccessible(entity as IEntity):
+		member = entity as IAccessibleMember
+		return true if member is null or member.IsPublic
+		
+		declaringType = member.DeclaringType
+		return true if	declaringType is self.CurrentType
+		return true if member.IsInternal and member isa IInternalEntity
+		return true if member.IsProtected and self.CurrentType.IsSubclassOf(declaringType)
+		return false			
 		
 	protected def getCompletionNamespace(expression as MemberReferenceExpression) as INamespace:		
 		target as Expression = expression.Target
