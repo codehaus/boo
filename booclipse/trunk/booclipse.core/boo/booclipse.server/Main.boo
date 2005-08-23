@@ -5,5 +5,5 @@ import booclipse.core
 portNumber, = argv
 client = ProcessMessengerClient()
 InterpreterService(client)
-OutlineService(client)
+CompilerService(client)
 client.Start(int.Parse(portNumber))

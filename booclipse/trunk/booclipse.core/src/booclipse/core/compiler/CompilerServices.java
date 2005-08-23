@@ -6,12 +6,10 @@ import java.io.StringReader;
 
 import org.eclipse.core.runtime.CoreException;
 
-import booclipse.core.interpreter.InteractiveInterpreter;
 import booclipse.core.launching.IProcessMessageHandler;
 import booclipse.core.launching.ProcessMessage;
-import booclipse.core.launching.ProcessMessenger;
 
-public class CompilerServices {
+public class CompilerServices extends AbstractBooServiceClient {
 
 	public static synchronized CompilerServices getInstance() throws CoreException {
 		if (null == _instance) {
@@ -22,15 +20,12 @@ public class CompilerServices {
 	
 	private static CompilerServices _instance;
 	
-	private ProcessMessenger _messenger;
-	
 	private Object _outlineMutex = new Object();
 	
 	OutlineNode _outline;
-
+	
 	private CompilerServices() throws CoreException {
-		_messenger = new ProcessMessenger(InteractiveInterpreter.createLaunchConfiguration());
-		_messenger.setMessageHandler("OUTLINE-RESPONSE", new IProcessMessageHandler() {
+		setMessageHandler("OUTLINE-RESPONSE", new IProcessMessageHandler() {
 			public void handle(ProcessMessage message) {
 				updateOutline(message.payload);
 			}
@@ -39,7 +34,7 @@ public class CompilerServices {
 
 	public OutlineNode getOutline(String text) throws IOException {
 		synchronized (_outlineMutex) {
-			_messenger.send("GET-OUTLINE", text);
+			send("GET-OUTLINE", text);
 			try {
 				_outlineMutex.wait(3000);
 			} catch (InterruptedException e) {
@@ -82,8 +77,12 @@ public class CompilerServices {
 		return node;
 	}
 
-	public void dispose() {
-		_messenger.dispose();
+	protected String getProposalsMessageId() {
+		return "GET-COMPILER-PROPOSALS";
+	}
+
+	protected String getProposalsResponseMessageId() {
+		return "COMPILER-PROPOSALS";
 	}
 
 }

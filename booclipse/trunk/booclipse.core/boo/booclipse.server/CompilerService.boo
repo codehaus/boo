@@ -6,7 +6,7 @@ import Boo.Lang.Compiler
 import Boo.Lang.Compiler.TypeSystem
 import booclipse.core
 
-class OutlineService(AbstractService):
+class CompilerService(AbstractService):
 	def constructor(client as ProcessMessengerClient):
 		super(client)
 		
@@ -22,4 +22,14 @@ class OutlineService(AbstractService):
 			except x:
 				Console.Error.WriteLine(x)
 				resetBuffer()
-			flush("OUTLINE-RESPONSE")	
+			flush("OUTLINE-RESPONSE")
+			
+		_client.OnMessage("GET-COMPILER-PROPOSALS") do (message as Message):
+			resetBuffer()
+			try:
+				writeTypeSystemEntities(ContentAssistProcessor.getProposals(message.Payload))
+			except x:
+				Console.Error.WriteLine(x)
+				resetBuffer()
+			flush("COMPILER-PROPOSALS")
+			

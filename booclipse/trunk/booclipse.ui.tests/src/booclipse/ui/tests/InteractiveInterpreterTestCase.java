@@ -47,7 +47,7 @@ public class InteractiveInterpreterTestCase extends TestCase {
 			_interpreter.eval("class Foo:\n\tdef foo():\n\t\tpass\nf = Foo()");
 			mutex.wait(3000);
 		}
-		CompilerProposal[] proposals = _interpreter.getCompletionProposals("f.", 2);
+		CompilerProposal[] proposals = _interpreter.getCompletionProposals("f.__codecomplete__");
 		String[] expected = new String[] {
 				"foo",
 				"Equals",

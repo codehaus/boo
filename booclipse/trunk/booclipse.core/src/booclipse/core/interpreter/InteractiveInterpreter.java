@@ -3,75 +3,34 @@ package booclipse.core.interpreter;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
-import booclipse.core.BooCore;
-import booclipse.core.compiler.CompilerProposal;
-import booclipse.core.compiler.CompilerProposalsMessageHandler;
-import booclipse.core.launching.BooLauncher;
+import booclipse.core.compiler.AbstractBooServiceClient;
 import booclipse.core.launching.IProcessMessageHandler;
 import booclipse.core.launching.ProcessMessage;
-import booclipse.core.launching.ProcessMessenger;
-import booclipse.core.model.IBooLaunchConfigurationTypes;
 
-public class InteractiveInterpreter {
-	
-	ProcessMessenger _messenger;
+public class InteractiveInterpreter extends AbstractBooServiceClient {
 	
 	IInterpreterListener _listener;
-
-	private CompilerProposalsMessageHandler _proposalsHandler;
 	
 	public InteractiveInterpreter() throws CoreException {
-		_messenger = new ProcessMessenger(createLaunchConfiguration());
-		_proposalsHandler = new CompilerProposalsMessageHandler();
-		_messenger.setMessageHandler("INTERPRETER-PROPOSALS", _proposalsHandler);
-		_messenger.setMessageHandler("EVAL-FINISHED", new IProcessMessageHandler() {
+		setMessageHandler("EVAL-FINISHED", new IProcessMessageHandler() {
 			public void handle(ProcessMessage message) {
 				if (null == _listener) return;
 				_listener.evalFinished(message.payload);
 			}
 		});
 	}
-
-	public void eval(String code) throws IOException {
-		_messenger.send(createMessage("EVAL", code));
-	}
-
-	private ProcessMessage createMessage(String name, String code) {
-		return new ProcessMessage(name, code);
-	}
-
-	public void unload() {
-		try {
-			_messenger.unload();
-		} catch (Exception x) {
-			BooCore.logException(x);
-		}
-	}
-
-	public void dispose() {
-		_messenger.dispose();
-	}
 	
-	public CompilerProposal[] getCompletionProposals(String code, int offset) throws IOException {
-		
-		CompilerProposal[] proposals = null;
-		
-		Object lock = _proposalsHandler.getMessageLock();
-		synchronized (lock) {
-			try {
-				_messenger.send(createMessage("GET-INTERPRETER-PROPOSALS", code + "__codecomplete__"));
-				lock.wait(_messenger.getTimeout());
-				proposals = _proposalsHandler.getProposals();
-			} catch (Exception e) {
-				BooCore.logException(e);
-			}
-		}
-		return proposals;
+	public void eval(String code) throws IOException {
+		send("EVAL", code);
+	}
+
+	protected String getProposalsResponseMessageId() {
+		return "INTERPRETER-PROPOSALS";
+	}
+
+	protected String getProposalsMessageId() {
+		return "GET-INTERPRETER-PROPOSALS";
 	}
 
 	public void addListener(IInterpreterListener listener) {
@@ -79,10 +38,4 @@ public class InteractiveInterpreter {
 		_listener = listener;
 	}
 	
-	public static ILaunchConfiguration createLaunchConfiguration() throws CoreException {
-		ILaunchConfigurationType configType = BooLauncher.getLaunchConfigurationType(IBooLaunchConfigurationTypes.ID_INTERPRETER_SUPPORT);
-		ILaunchConfigurationWorkingCopy wc = configType.newInstance(null, "interpreter support");
-		wc.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
-		return wc;
-	}
 }

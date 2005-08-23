@@ -1,6 +1,9 @@
 namespace booclipse.server
 
 import System.IO
+import Boo.Lang.Interpreter
+import Boo.Lang.Compiler
+import Boo.Lang.Compiler.TypeSystem
 import booclipse.core
 
 class AbstractService:
@@ -20,6 +23,20 @@ class AbstractService:
 		
 	def flush(name as string):
 		_client.Send(Message(Name: name, Payload: _buffer.ToString()))
+		
+	def getEntityType(entity as IEntity):
+		if EntityType.Type == entity.EntityType:
+			type = entity as IType
+			return "Interface" if type.IsInterface
+			return "Enum" if type.IsEnum
+			return "Struct" if type.IsValueType
+			return "Callable" if type isa ICallableType
+			return "Class"
+		return entity.EntityType.ToString()
+		
+	def writeTypeSystemEntities(entities as (IEntity)):
+		for member in entities:
+			writeLine("${getEntityType(member)}:${member.Name}:${InteractiveInterpreter.DescribeEntity(member)}")
 		
 	abstract def registerMessageHandlers():
 		pass
