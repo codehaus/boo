@@ -29,7 +29,7 @@ public class CompilerServicesTestCase extends AbstractBooTestCase {
 		assertEquals("Foo", children[0].name());
 		assertEquals(OutlineNode.CLASS, children[0].type());
 		assertEquals(3, children[0].line());
-		assertEquals("global", children[1].name());
+		assertEquals("global()", children[1].name());
 		assertEquals(17, children[1].line());
 		assertEquals(OutlineNode.METHOD, children[1].type());
 	}
