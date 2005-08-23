@@ -1,7 +1,6 @@
 namespace booclipse.server
 
 import System.IO
-import Boo.Lang.Interpreter
 import Boo.Lang.Compiler
 import Boo.Lang.Compiler.TypeSystem
 import booclipse.core
@@ -36,7 +35,7 @@ class AbstractService:
 		
 	def writeTypeSystemEntities(entities as (IEntity)):
 		for member in entities:
-			writeLine("${getEntityType(member)}:${member.Name}:${InteractiveInterpreter.DescribeEntity(member)}")
+			writeLine("${getEntityType(member)}:${member.Name}:${describeEntity(member)}")
 		
 	abstract def registerMessageHandlers():
 		pass

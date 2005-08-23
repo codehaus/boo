@@ -65,4 +65,4 @@ class OutlineVisitor(DepthFirstVisitor):
 		_writer.WriteLine("END-NODE")
 		
 	def WriteTypeMember(node as TypeMember):
-		_writer.WriteLine("${node.NodeType}:${node.Name}:${node.LexicalInfo.Line}")
+		_writer.WriteLine("${node.NodeType}:${describeNode(node)}:${node.LexicalInfo.Line}")
