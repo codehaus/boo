@@ -30,7 +30,9 @@ import booclipse.nunit.NUnitPlugin;
 
 public class StackTraceViewer {
 	
-	private static final Pattern LINK_PATTERN = Pattern.compile("\\(at\\s(.+\\.(boo|cs|js)):(\\d+)\\)");
+	private static final Pattern STACK_PATTERN = Pattern.compile("\\(at\\s(.+\\.(boo|cs|js)):(\\d+)\\)");
+	
+	private static final Pattern COMPILER_OUTPUT_PATTERN = Pattern.compile("\\b(.+\\.(boo|cs|js))\\((\\d+),\\d+\\)");
 	
 	private Link _traceView;
 
@@ -114,7 +116,11 @@ public class StackTraceViewer {
 	}
 	
 	private String createHyperLinks(String trace) {		
-		final Matcher matcher = LINK_PATTERN.matcher(trace);
+		return createHyperLinks(COMPILER_OUTPUT_PATTERN, createHyperLinks(STACK_PATTERN, trace));
+	}
+
+	private String createHyperLinks(Pattern pattern, String trace) {
+		final Matcher matcher = pattern.matcher(trace);
 		StringBuffer buffer = new StringBuffer();
 		while (matcher.find()) {
 			String fname = matcher.group(1);

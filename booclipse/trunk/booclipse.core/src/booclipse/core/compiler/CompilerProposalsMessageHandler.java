@@ -6,7 +6,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 
 import booclipse.core.BooCore;
-import booclipse.core.interpreter.CompilerProposal;
 import booclipse.core.launching.IProcessMessageHandler;
 import booclipse.core.launching.ProcessMessage;
 

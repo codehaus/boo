@@ -38,7 +38,7 @@ class InterpreterService(AbstractService):
 				writeLine(x)
 			flush("EVAL-FINISHED")
 
-		_client.OnMessage("GET-PROPOSALS") do (message as Message):
+		_client.OnMessage("GET-INTERPRETER-PROPOSALS") do (message as Message):
 			resetBuffer()
 			try:
 				entities = getInterpreter().SuggestCodeCompletion(message.Payload)
@@ -46,4 +46,4 @@ class InterpreterService(AbstractService):
 					writeLine("${getEntityType(member)}:${member.Name}:${InteractiveInterpreter.DescribeEntity(member)}")
 			except x:
 				Console.Error.WriteLine(x)
-			flush("PROPOSALS")
+			flush("INTERPRETER-PROPOSALS")
