@@ -3,7 +3,7 @@ package booclipse.ui.tests;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
-import booclipse.core.interpreter.CompilerProposal;
+import booclipse.core.compiler.CompilerProposal;
 import booclipse.core.interpreter.InteractiveInterpreter;
 import booclipse.core.interpreter.IInterpreterListener;
 

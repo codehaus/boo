@@ -37,9 +37,9 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import booclipse.core.compiler.CompilerProposal;
 import booclipse.core.interpreter.IInterpreterListener;
 import booclipse.core.interpreter.InteractiveInterpreter;
-import booclipse.core.interpreter.CompilerProposal;
 import booclipse.ui.BooUI;
 import booclipse.ui.IBooUIConstants;
 

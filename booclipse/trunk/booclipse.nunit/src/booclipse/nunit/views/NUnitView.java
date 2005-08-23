@@ -226,9 +226,9 @@ public class NUnitView extends ViewPart {
 		public void testStarted(IBooAssemblySource source, final String fullName) {
 			getDisplay().asyncExec(new Runnable() {
 				public void run() {
+					_progressBar.step(_failures.size());
 					++_runs;
 					updateUI();
-					_progressBar.step(_failures.size());
 				}
 			});
 		}

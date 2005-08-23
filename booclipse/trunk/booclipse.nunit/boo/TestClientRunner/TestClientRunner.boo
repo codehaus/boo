@@ -40,6 +40,7 @@ class TextWriterListener(EventListener):
 			Console.Error.WriteLine(r.StackTrace)
 			writer = StringWriter()
 			writer.WriteLine(r.Test.FullName)
+			writer.WriteLine(r.Message)
 			writer.WriteLine(r.StackTrace)
 			_client.Send("TEST-FAILED", writer.ToString())
 		

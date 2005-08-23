@@ -1,7 +1,7 @@
 /**
  * 
  */
-package booclipse.core.interpreter;
+package booclipse.core.compiler;
 
 public class CompilerProposal {
 	

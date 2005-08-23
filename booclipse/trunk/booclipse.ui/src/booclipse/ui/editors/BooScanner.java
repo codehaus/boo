@@ -104,7 +104,7 @@ public class BooScanner extends RuleBasedScanner {
 		"short", "ushort",
 		"int", "uint",
 		"long", "ulong",
-		"string", "object",
+		"string", "object", "duck",
 		"single", "double",
 		"void",
 		"regex", "timespan", "date"
