@@ -27,6 +27,8 @@ public class BooPartitionScanner extends RuleBasedPartitionScanner {
 	
 	static final String SINGLELINE_COMMENT_TYPE = "___slc";
 	
+	static final String SINGLE_QUOTED_STRING = "___sqs";
+	
 	static final String DOUBLE_QUOTED_STRING = "___dqs";
 	
 	static final String TRIPLE_QUOTED_STRING = "___tqs";
@@ -39,6 +41,7 @@ public class BooPartitionScanner extends RuleBasedPartitionScanner {
 		SINGLELINE_COMMENT_TYPE,
 		TRIPLE_QUOTED_STRING,
 		DOUBLE_QUOTED_STRING,
+		SINGLE_QUOTED_STRING,
 		REGEX_TYPE
 	};
 
@@ -46,6 +49,7 @@ public class BooPartitionScanner extends RuleBasedPartitionScanner {
 		
 		IToken multiLineComment = new Token(MULTILINE_COMMENT_TYPE);
 		IToken singleLineComment = new Token(SINGLELINE_COMMENT_TYPE);
+		IToken sqs = new Token(SINGLE_QUOTED_STRING);
 		IToken dqs = new Token(DOUBLE_QUOTED_STRING);
 		IToken tqs = new Token(TRIPLE_QUOTED_STRING);
 		IToken regex = new Token(REGEX_TYPE);
@@ -58,6 +62,7 @@ public class BooPartitionScanner extends RuleBasedPartitionScanner {
 			new SingleLineRule("@/", "/", regex, '\\'),
 			new MultiLineRule("\"\"\"", "\"\"\"", tqs, (char)0, true),
 			new SingleLineRule("\"", "\"", dqs, '\\'),
+			new SingleLineRule("'", "'", sqs, '\\'),
 		};
 		setPredicateRules(rules);
 	}

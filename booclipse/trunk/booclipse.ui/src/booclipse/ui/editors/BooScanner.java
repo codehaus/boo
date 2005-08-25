@@ -100,7 +100,7 @@ public class BooScanner extends RuleBasedScanner {
 	};
 	
 	static final String[] PRIMITIVES = new String[] {
-		"bool", "byte", "char",
+		"bool", "byte", "sbyte", "char",
 		"short", "ushort",
 		"int", "uint",
 		"long", "ulong",
@@ -226,9 +226,6 @@ public class BooScanner extends RuleBasedScanner {
 	}
 
 	public BooScanner(ISharedTextColors manager) {
-		IToken stringToken =
-			new Token(
-				new TextAttribute(manager.getColor(BooColorConstants.STRING)));
 		IToken defaultToken = 
 			new Token(
 				new TextAttribute(manager.getColor(BooColorConstants.DEFAULT)));
@@ -238,7 +235,6 @@ public class BooScanner extends RuleBasedScanner {
 					manager.getColor(BooColorConstants.NUMBER)));
 		
 		IRule[] rules = new IRule[] {
-			new SingleLineRule("'", "'", stringToken, '\\'),
 			new WhitespaceRule(new BooWhitespaceDetector()),
 			new NumberRule(numberToken),
 			new BooWordRule(manager),
