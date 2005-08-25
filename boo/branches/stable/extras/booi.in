@@ -1,2 +1,0 @@
-#!/bin/sh
-env @RUNTIME@ @prefix@/lib/boo/booi.exe "$@"
