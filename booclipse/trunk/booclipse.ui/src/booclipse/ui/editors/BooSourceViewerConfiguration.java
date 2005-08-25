@@ -52,6 +52,7 @@ public class BooSourceViewerConfiguration extends SourceViewerConfiguration {
 	private MultiLineCommentScanner _multiLineCommentScanner;
 	private StringScanner _tqsScanner;
 	private StringScanner _dqsScanner;
+	private SingleQuotedStringScanner _sqsScanner;
 	private RegexScanner _regexScanner;
 	private ContentAssistant _assistant;
 
@@ -135,6 +136,13 @@ public class BooSourceViewerConfiguration extends SourceViewerConfiguration {
 		return _dqsScanner;
 	}
 	
+	protected SingleQuotedStringScanner getSingleQuotedStringScanner() {
+		if (_sqsScanner == null) {
+			_sqsScanner = new SingleQuotedStringScanner(_colorManager.getColor(BooColorConstants.STRING));
+		}
+		return _sqsScanner;
+	}
+	
 	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
 		return new MarkerAnnotationHover();
 	}
@@ -161,6 +169,7 @@ public class BooSourceViewerConfiguration extends SourceViewerConfiguration {
 		configureReconciler(reconciler, IDocument.DEFAULT_CONTENT_TYPE, getBooScanner());
 		configureReconciler(reconciler, BooPartitionScanner.MULTILINE_COMMENT_TYPE, getMultiLineCommentScanner());		
 		configureReconciler(reconciler, BooPartitionScanner.SINGLELINE_COMMENT_TYPE, getMultiLineCommentScanner());
+		configureReconciler(reconciler, BooPartitionScanner.SINGLE_QUOTED_STRING, getSingleQuotedStringScanner());
 		configureReconciler(reconciler, BooPartitionScanner.DOUBLE_QUOTED_STRING, getDoubleQuotedStringScanner());
 		configureReconciler(reconciler, BooPartitionScanner.TRIPLE_QUOTED_STRING, getTripleQuotedStringScanner());
 		configureReconciler(reconciler, BooPartitionScanner.REGEX_TYPE, getRegexScanner());
