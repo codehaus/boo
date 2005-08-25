@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/booclipse.ui_1.0.19.jar" id="booclipse.ui" version="1.0.19"/>
+   <feature url="features/booclipse.ui_1.0.20.jar" id="booclipse.ui" version="1.0.20"/>
 </site>

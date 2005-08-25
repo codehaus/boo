@@ -6,13 +6,13 @@
     </booclipse.core.internal.AssemblySourceReference-Remembrance>
     <booclipse.core.internal.GlobalAssemblyCacheReference-Remembrance>
       <name>Boo.Lang.Interpreter</name>
-      <version>0.5.6.1767</version>
+      <version>1.0.0.0</version>
       <culture>neutral</culture>
       <token>32c39770e9a21a67</token>
     </booclipse.core.internal.GlobalAssemblyCacheReference-Remembrance>
     <booclipse.core.internal.GlobalAssemblyCacheReference-Remembrance>
       <name>Boo.Lang.Useful</name>
-      <version>0.5.6.1767</version>
+      <version>1.0.0.0</version>
       <culture>neutral</culture>
       <token>32c39770e9a21a67</token>
     </booclipse.core.internal.GlobalAssemblyCacheReference-Remembrance>
