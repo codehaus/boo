@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+
+   <extension
+         id="booBuilder"
+         name="Boo Project Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder hasNature="true">
+         <run class="booclipse.core.internal.BooBuilder"/>
+      </builder>
+   </extension>
+   
+   <extension
+         id="booNature"
+         name="Boo Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run class="booclipse.core.internal.BooNature"/>
+      </runtime>
+      <builder id="booclipse.core.booBuilder"/>
+   </extension>
+   
+   <extension
+         id="booProblem"
+         name="Boo Problem"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <persistent value="true"/>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+         
+         <launchConfigurationType
+		         id="booclipse.core.scriptLaunchConfigurationType"
+                 name="Boo Script" 
+                 modes="run" 
+                 delegate="booclipse.core.launching.internal.BooScriptLaunchConfigurationDelegate" />
+   </extension>
+   
+   	<extension point="org.eclipse.debug.core.launchConfigurationTypes">
+    	<launchConfigurationType
+           delegate="booclipse.core.launching.internal.InterpreterLaunchConfigurationDelegate"
+           public="false"
+           name="Interactive Interpreter Support"
+           modes="run"
+           id="booclipse.core.interpreter.support">
+    	</launchConfigurationType>
+	</extension>
+   
+   
+      <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+         
+         <launchConfigurationType
+		         id="booclipse.core.appLaunchConfigurationType"
+                 name="Boo Application" 
+                 modes="run" 
+                 delegate="booclipse.core.launching.internal.BooApplicationLaunchConfigurationDelegate" />
+   </extension>
+   
+   <extension point="org.eclipse.core.runtime.preferences">
+		<initializer class="booclipse.core.internal.BooCorePreferencesInitializer" />
+	</extension>
+   
+
+</plugin>
+   
