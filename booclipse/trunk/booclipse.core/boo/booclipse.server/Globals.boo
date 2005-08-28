@@ -47,7 +47,7 @@ def describeParameter(p as ParameterDeclaration):
 def optionalTypeReference(t as TypeReference):
 	return "" if t is null
 	
-	external = t.Entity as ExternalType
+	external = TypeSystemServices.GetOptionalEntity(t) as ExternalType
 	if external is not null:
 		return " as ${InteractiveInterpreter.GetBooTypeName(external.ActualType)}"
 	return " as ${t}" if t is not null

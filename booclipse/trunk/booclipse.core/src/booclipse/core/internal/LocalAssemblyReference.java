@@ -49,6 +49,13 @@ public class LocalAssemblyReference implements ILocalAssemblyReference {
 		public Remembrance(String path) {
 			this.path = path;
 		}
+		
+		/**
+		 * public no arg constructor for xstream deserialization
+		 * on less capable virtual machines.
+		 */
+		public Remembrance() {
+		}
 
 		public IMemorable activate() throws CoreException {
 			return BooAssemblyReference.get(ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(this.path)));

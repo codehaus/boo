@@ -195,6 +195,13 @@ public class BooAssemblySource implements IBooAssemblySource {
 			}
 		}
 		
+		/**
+		 * public no arg constructor for xstream deserialization
+		 * on less capable virtual machines.
+		 */
+		public AssemblySourceRemembrance() {
+		}
+		
 		public IBooAssemblyReference[] activateReferences() throws CoreException {
 			IBooAssemblyReference[] asmReferences = new IBooAssemblyReference[references.length];
 			for (int i=0; i<asmReferences.length; ++i) {

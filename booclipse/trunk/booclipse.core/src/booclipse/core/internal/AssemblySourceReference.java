@@ -48,6 +48,13 @@ public class AssemblySourceReference implements IAssemblySourceReference {
 		public Remembrance(String path) {
 			this.path = path;
 		}
+		
+		/**
+		 * public no arg constructor for xstream deserialization
+		 * on less capable virtual machines.
+		 */
+		public Remembrance() {
+		}
 
 		public IMemorable activate() throws CoreException {
 			IFolder folder = ResourcesPlugin.getWorkspace().getRoot().getFolder(new Path(this.path));
