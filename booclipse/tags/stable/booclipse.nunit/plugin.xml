@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+	<extension-point id="listeners" name="Test Listeners"/>
+
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="NUnit Tests"
+            icon="icons/nunit.gif"
+            category="booclipse.ui"
+            class="booclipse.nunit.views.NUnitView"
+            id="booclipse.nunit.views.NUnitView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="booclipse.ui.booPerspective">
+         <view
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="stack"
+               id="booclipse.nunit.views.NUnitView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+         
+         <launchConfigurationType
+		         id="booclipse.nunit.testLaunchConfigurationType"
+                 name="NUnit Test" 
+                 modes="run" 
+                 delegate="booclipse.nunit.launching.NUnitLaunchConfigurationDelegate" />
+   </extension>   
+      
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+       <launchConfigurationTypeImage
+               icon="icons/nunit.gif"
+               configTypeID="booclipse.nunit.testLaunchConfigurationType"
+ 		       id="booclipse.nunit.launchConfigurationTypeImage.test">
+    </launchConfigurationTypeImage>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+    <launchConfigurationTabGroup
+        type="booclipse.nunit.testLaunchConfigurationType"
+        class="booclipse.nunit.launching.NUnitTabGroup"
+        id="booclipse.nunit.launching.launchConfigurationTabGroup.test">
+    </launchConfigurationTabGroup>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut
+        id="booclipse.nunit.testLaunchShortcut"
+        class="booclipse.nunit.launching.NUnitLaunchShortcut"
+        label="NUnit Test"
+        icon="icons/nunit.gif"
+        modes="run">
+            <perspective id="booclipse.ui.booPerspective"/>
+            <perspective id="org.eclipse.debug.ui.DebugPerspective"/>
+            
+          <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+               <and>
+	               <test property="org.eclipse.debug.ui.matchesPattern" value="*.boo"/>
+	           </and>
+               </iterate>
+             </with>
+           </enablement>
+  		 </contextualLaunch>
+    </shortcut>
+	</extension>
+	
+	<extension point="org.eclipse.debug.core.launchConfigurationTypes">
+    	<launchConfigurationType
+           delegate="booclipse.nunit.launching.TestRunnerLaunchConfigurationDelegate"
+           public="false"
+           name="NUnit Support"
+           modes="run"
+           id="booclipse.nunit.support">
+    	</launchConfigurationType>
+	</extension>
+	
+	
+	<!--	
+	<extension point="booclipse.nunit.listeners">
+		<listener class="booclipse.nunit.views.DialogListener" />
+	</extension>
+	-->
+
+</plugin>
