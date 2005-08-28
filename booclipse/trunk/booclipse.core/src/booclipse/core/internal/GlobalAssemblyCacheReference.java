@@ -54,6 +54,13 @@ public class GlobalAssemblyCacheReference implements IGlobalAssemblyCacheReferen
 			this.culture = culture;
 			this.token = token;
 		}
+		
+		/**
+		 * public no arg constructor for xstream deserialization
+		 * on less capable virtual machines.
+		 */
+		public Remembrance() {
+		}
 
 		public IMemorable activate() throws CoreException {
 			return BooAssemblyReference.getGlobalAssemblyCacheReference(name, version, culture, token);

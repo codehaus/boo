@@ -69,7 +69,7 @@ class ContentAssistProcessor(ProcessMethodBodiesWithDuckTyping):
 		if target.ExpressionType is not null:
 			if target.ExpressionType.EntityType != EntityType.Error:
 				return cast(INamespace, target.ExpressionType)
-		return cast(INamespace, target.Entity)
+		return cast(INamespace, TypeSystemServices.GetOptionalEntity(target))
 	
 	protected static def configurePipeline(hunter):
 		pipeline = ResolveExpressions(BreakOnErrors: false)
