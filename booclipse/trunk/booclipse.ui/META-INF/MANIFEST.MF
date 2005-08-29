@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Boo Development Tools
 Bundle-SymbolicName: booclipse.ui; singleton:=true
-Bundle-Version: 1.0.21
+Bundle-Version: 1.0.22
 Bundle-Activator: booclipse.ui.BooUI
 Bundle-Vendor: Rodrigo B. de Oliveira
 Bundle-Localization: plugin
