@@ -25,6 +25,49 @@
    </extension>
    
    <extension
+         point="org.eclipse.ui.commands">
+	<!-- categories -->
+      <category
+            name="Text Editing"
+            description="Boo source editor commands"
+            id="booclipse.ui.commands.category.source">
+      </category>
+      
+      <command
+            name="Expand Code"
+            description="Expands the code currently being edited"
+            categoryId="booclipse.ui.commands.category.source"
+            id="booclipse.ui.editors.actions.ExpandCodeAction">
+      </command>
+   </extension>
+   
+   <extension 
+   	point="org.eclipse.ui.contexts">
+   	
+	   	<context
+            name="Editing Boo Code"
+            description="Editing Boo code"
+            parentId="org.eclipse.ui.textEditorScope"
+            id="booclipse.ui.booEditorScope">
+      </context>
+   </extension>
+   
+   
+   <extension
+         point="org.eclipse.ui.bindings">
+         
+      <!--  win32:  M1=CTRL,    M2=SHIFT, M3=ALT, M4=-
+            carbon: M1=COMMAND, M2=SHIFT, M3=ALT, M4=CTRL -->
+      
+<!-- edit -->
+      <key
+            sequence="M1+M2+M3+E"
+            contextId="booclipse.ui.booEditorScope"
+            commandId="booclipse.ui.editors.actions.ExpandCodeAction"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+   </extension>
+   
+   <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"

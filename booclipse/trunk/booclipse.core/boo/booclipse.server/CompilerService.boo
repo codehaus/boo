@@ -33,3 +33,12 @@ class CompilerService(AbstractService):
 				resetBuffer()
 			flush("COMPILER-PROPOSALS")
 			
+		_client.OnMessage("EXPAND") do (message as Message):
+			resetBuffer()
+			compiler = BooCompiler()
+			compiler.Parameters.Pipeline = Pipelines.Compile()
+			compiler.Parameters.Input.Add(Boo.Lang.Compiler.IO.StringInput("expand", message.Payload))
+			writeLine(compiler.Run().CompileUnit.ToCodeString())
+			flush("EXPAND-RESPONSE")
+			
+			
