@@ -2,7 +2,7 @@
 <feature
       id="booclipse.ui"
       label="Boo Development Tools"
-      version="1.0.21"
+      version="1.0.22"
       provider-name="Rodrigo B. de Oliveira">
 
    <description url="http://boo.codehaus.org/">
@@ -37,7 +37,7 @@ USA
          id="booclipse.ui"
          download-size="0"
          install-size="0"
-         version="1.0.21"/>
+         version="1.0.22"/>
 
    <plugin
          id="booclipse.nunit"
@@ -49,6 +49,6 @@ USA
          id="booclipse.core"
          download-size="0"
          install-size="0"
-         version="1.0.21"/>
+         version="1.0.22"/>
 
 </feature>
