@@ -27,7 +27,7 @@ def describeNode(node as Node):
 	
 def describeField(field as Field):
 	return "${field.Name}${optionalTypeReference(field.Type)}"
-	
+
 def describeProperty(p as Property):
 	parameters = ""
 	if len(p.Parameters) > 0:
