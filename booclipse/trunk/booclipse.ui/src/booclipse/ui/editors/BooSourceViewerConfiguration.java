@@ -150,7 +150,7 @@ public class BooSourceViewerConfiguration extends SourceViewerConfiguration {
 	public String[] getDefaultPrefixes(ISourceViewer sourceViewer, String contentType) {
 		if (IDocument.DEFAULT_CONTENT_TYPE == contentType
 			|| BooPartitionScanner.SINGLELINE_COMMENT_TYPE == contentType) {
-			return new String[] { "//", "#" };
+			return new String[] { "#", "//" };
 		}
 		return null;
 	}

@@ -22,14 +22,21 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import booclipse.ui.BooUI;
+import booclipse.ui.editors.actions.ExpandCodeAction;
 import booclipse.ui.editors.actions.ToggleCommentAction;
 
 public class BooEditor extends TextEditor {
+	
+	public static final String ID_EDITOR = "booclipse.ui.editors.BooEditor";
 
 	private BooContentOutlinePage _outlinePage;
 
@@ -38,8 +45,7 @@ public class BooEditor extends TextEditor {
 		setSourceViewerConfiguration(new BooSourceViewerConfiguration(
 				getSharedColors()));
 		setDocumentProvider(new BooDocumentProvider());
-		setKeyBindingScopes(new String[] { "org.eclipse.ui.textEditorScope",
-				"booclipse.ui" });
+		setKeyBindingScopes(new String[] { "booclipse.ui.booEditorScope", "org.eclipse.ui.textEditorScope" });
 	}
 
 	protected void createActions() {
@@ -52,12 +58,16 @@ public class BooEditor extends TextEditor {
 		setActionActivationCode(ToggleCommentAction.ID, '/', -1, SWT.CTRL);
 		markAsStateDependentAction(ToggleCommentAction.ID, true);
 		action.configure(getSourceViewer(), getSourceViewerConfiguration());
+		
+		Action eca = new ExpandCodeAction(this);
+		setAction(eca.getId(), eca);
 	}
 
 	protected void editorContextMenuAboutToShow(IMenuManager menu) {
 		super.editorContextMenuAboutToShow(menu);
 		IAction action = getAction(ToggleCommentAction.ID);
 		menu.appendToGroup(ITextEditorActionConstants.GROUP_EDIT, action);
+		menu.appendToGroup(ITextEditorActionConstants.MB_ADDITIONS, getAction(ExpandCodeAction.ID));
 	}
 
 	public Object getAdapter(Class required) {

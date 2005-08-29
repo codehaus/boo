@@ -6,6 +6,7 @@ import java.io.StringReader;
 
 import org.eclipse.core.runtime.CoreException;
 
+import booclipse.core.BooCore;
 import booclipse.core.launching.IProcessMessageHandler;
 import booclipse.core.launching.ProcessMessage;
 
@@ -30,6 +31,30 @@ public class CompilerServices extends AbstractBooServiceClient {
 				updateOutline(message.payload);
 			}
 		});
+	}
+	
+	public synchronized String expand(String code) {
+		final String[] returnValue = new String[1];
+		
+		try {
+			setMessageHandler("EXPAND-RESPONSE", new IProcessMessageHandler() {
+				public void handle(ProcessMessage message) {
+					synchronized (returnValue) {
+						returnValue[0] = message.payload;
+						returnValue.notify();
+					}
+				};
+			});
+			synchronized (returnValue) {
+				send("EXPAND", code);
+				returnValue.wait(3000);
+			}
+		} catch (Exception e) {
+			BooCore.logException(e);
+		} finally {
+			setMessageHandler("EXPAND-RESPONSE", null);
+		}
+		return returnValue[0];
 	}
 
 	public OutlineNode getOutline(String text) throws IOException {
@@ -84,5 +109,4 @@ public class CompilerServices extends AbstractBooServiceClient {
 	protected String getProposalsResponseMessageId() {
 		return "COMPILER-PROPOSALS";
 	}
-
 }
