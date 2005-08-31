@@ -42,7 +42,7 @@ public class GlobalAssemblyCacheReference implements IGlobalAssemblyCacheReferen
 		return _token;
 	}
 	
-	static class Remembrance implements IRemembrance {
+	static public class Remembrance implements IRemembrance {
 		public String name;
 		public String version;
 		public String culture;

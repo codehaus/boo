@@ -184,7 +184,7 @@ public class BooAssemblySource implements IBooAssemblySource {
 		ResourcesPlugin.getWorkspace().run(action, monitor);
 	}
 	
-	static class AssemblySourceRemembrance {
+	static public class AssemblySourceRemembrance {
 		public String outputType;
 		public IRemembrance[] references;
 		public AssemblySourceRemembrance(BooAssemblySource source) {

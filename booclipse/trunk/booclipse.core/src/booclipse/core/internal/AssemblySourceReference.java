@@ -41,7 +41,7 @@ public class AssemblySourceReference implements IAssemblySourceReference {
 		return visitor.visit(this);
 	}
 	
-	static class Remembrance implements IRemembrance {
+	static public class Remembrance implements IRemembrance {
 		
 		public String path;
 
