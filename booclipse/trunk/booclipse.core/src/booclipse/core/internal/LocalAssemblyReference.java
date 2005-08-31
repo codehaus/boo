@@ -42,7 +42,7 @@ public class LocalAssemblyReference implements ILocalAssemblyReference {
 		return IBooAssemblyReference.LOCAL;
 	}
 	
-	static class Remembrance implements IRemembrance {
+	static public class Remembrance implements IRemembrance {
 		
 		public String path;
 
