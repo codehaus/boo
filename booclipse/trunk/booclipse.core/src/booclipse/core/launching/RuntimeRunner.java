@@ -58,7 +58,7 @@ public class RuntimeRunner {
 	public static String getOSDependentRuntimeExecutable(String runtimeLocation) throws IOException {
 		String path = combinePath(runtimeLocation, RUNTIME_EXECUTABLE);
 		return Platform.OS_WIN32.equals(Platform.getOS())
-			? path + ".bat"
+			? path + ".exe"
 			: path;
 	}
 	

@@ -362,7 +362,9 @@ public class ReferenceContainerPropertyPage extends PreferencePage
 
 	protected boolean isLibrary(IFile file) {
 		String extension = file.getFileExtension();
-		return null == extension ? false : extension.equals("dll");
+		return null == extension
+			? false
+			: (extension.equals("dll") || extension.equals("exe"));
 	}
 
 	protected boolean containsLibrary(IFolder folder) throws CoreException {
