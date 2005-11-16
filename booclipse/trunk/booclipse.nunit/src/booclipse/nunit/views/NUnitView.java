@@ -162,7 +162,7 @@ public class NUnitView extends ViewPart {
 	class FailureLabelProvider implements ILabelProvider {
 		
 		private final Image _errorIcon= BooUI.getImage(IBooUIConstants.ERROR);
-		private final Image _failureIcon= BooUI.getImage(IBooUIConstants.WARNING);
+		//private final Image _failureIcon= BooUI.getImage(IBooUIConstants.WARNING);
 
 		public void addListener(ILabelProviderListener listener) {
 		}
