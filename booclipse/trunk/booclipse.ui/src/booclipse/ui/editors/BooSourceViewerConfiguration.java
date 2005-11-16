@@ -41,9 +41,7 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
-import booclipse.core.compiler.CompilerServices;
 import booclipse.ui.BooUI;
-import booclipse.ui.views.BooContentAssistProcessor;
 
 public class BooSourceViewerConfiguration extends SourceViewerConfiguration {
 	private BooDoubleClickStrategy _doubleClickStrategy;
