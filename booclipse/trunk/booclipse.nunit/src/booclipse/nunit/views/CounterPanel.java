@@ -87,7 +87,7 @@ public class CounterPanel extends Composite {
 	}
 	
 	public void setRunValue(int value) {
-		String runString= MessageFormat.format("{0}/{1}", new String[] { Integer.toString(value), Integer.toString(_total) }); 
+		String runString= MessageFormat.format("{0}/{1}", new Object[] { Integer.toString(value), Integer.toString(_total) }); 
 		_numberOfRuns.setText(runString);
 
 		_numberOfRuns.redraw();
