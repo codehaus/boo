@@ -9,7 +9,7 @@ class AbstractService:
 	
 	_client as ProcessMessengerClient
 	_buffer = StringWriter()
-	
+
 	def constructor(client as ProcessMessengerClient):
 		_client = client
 		registerMessageHandlers()
