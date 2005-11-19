@@ -47,6 +47,8 @@ public class BooScanner extends RuleBasedScanner {
 		"public",
 		"protected",
 		"internal",
+		
+		"of",
 	};	            
 	
 	static final String[] MODIFIERS = new String[] {
