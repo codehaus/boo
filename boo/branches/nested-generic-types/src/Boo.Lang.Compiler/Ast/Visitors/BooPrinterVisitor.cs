@@ -560,6 +560,11 @@ namespace Boo.Lang.Compiler.Ast.Visitors
 
 		override public void OnSimpleTypeReference(SimpleTypeReference t)
 		{
+			if (t.Prefix != null)
+			{
+				Visit(t.Prefix);
+				Write(".");
+			}
 			Write(t.Name);
 		}
 			

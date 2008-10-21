@@ -62,17 +62,17 @@ namespace Boo.Lang.Compiler.Steps
 			NameResolutionService.ResolveArrayTypeReference(node);
 		}
 		
-		override public void OnSimpleTypeReference(SimpleTypeReference node)
+		override public void LeaveSimpleTypeReference(SimpleTypeReference node)
 		{
 			NameResolutionService.ResolveSimpleTypeReference(node);
 		}
 
-		override public void OnGenericTypeReference(GenericTypeReference node)
+		override public void LeaveGenericTypeReference(GenericTypeReference node)
 		{
 			NameResolutionService.ResolveSimpleTypeReference(node);
 		}
-		
-		override public void OnGenericTypeDefinitionReference(GenericTypeDefinitionReference node)
+
+		override public void LeaveGenericTypeDefinitionReference(GenericTypeDefinitionReference node)
 		{
 			NameResolutionService.ResolveSimpleTypeReference(node);
 		}

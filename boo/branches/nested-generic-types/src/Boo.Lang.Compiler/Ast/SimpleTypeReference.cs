@@ -38,21 +38,38 @@ namespace Boo.Lang.Compiler.Ast
 		
 		public SimpleTypeReference(string name)
 		{
-			this.Name = name;
+			ParseName(name);
 		}
 		
 		public SimpleTypeReference(LexicalInfo lexicalInfo, string name) : base(lexicalInfo)
 		{
-			this.Name = name;
+			ParseName(name);
 		}
-		
-		public SimpleTypeReference(LexicalInfo lexicalInfoProvider) : base(lexicalInfoProvider)
+
+		private void ParseName(string name)
 		{
+			int lastPeriod = name.LastIndexOf('.');
+			if (lastPeriod > 0)
+			{
+				Prefix = new SimpleTypeReference(name.Substring(0, lastPeriod));
+			}
+			Name = name.Substring(lastPeriod + 1);
+		}
+
+		public SimpleTypeReference(LexicalInfo lexicalInfoProvider)
+			: base(lexicalInfoProvider)
+		{
+		}
+
+		public SimpleTypeReference(SimpleTypeReference prefix, string name) : this(name)
+		{
+			Prefix = prefix;
+			if (prefix != null) LexicalInfo = prefix.LexicalInfo;
 		}
 		
 		override public string ToString()
 		{
-			return _name;
+			return ToCodeString();
 		}
 	}
 }

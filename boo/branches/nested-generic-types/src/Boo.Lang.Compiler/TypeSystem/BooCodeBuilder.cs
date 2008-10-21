@@ -307,23 +307,94 @@ namespace Boo.Lang.Compiler.TypeSystem
 
 		public TypeReference CreateTypeReference(IType tag)
 		{
-			TypeReference typeReference = null;
-
 			if (tag.IsArray)
 			{
-				IType elementType = ((IArrayType)tag).GetElementType();
-				//typeReference = new ArrayTypeReference();
-				//((ArrayTypeReference)typeReference).ElementType = CreateTypeReference(elementType);
-				// FIXME: This is what it *should* be, but it causes major breakage. ??
-				typeReference = new ArrayTypeReference(CreateTypeReference(elementType), CreateIntegerLiteral(((IArrayType)tag).GetArrayRank()));
+				return CreateArrayTypeReference(tag);
 			}
 			else
 			{
-				typeReference = new SimpleTypeReference(tag.FullName);
+				return CreateSimpleTypeReference(tag);
 			}
 
+			// TODO: create CallableTypeReference for anonymous callable types?
+		}
+
+		private TypeReference CreateArrayTypeReference(IType tag)
+		{
+			IType elementType = ((IArrayType)tag).GetElementType();
+			//typeReference = new ArrayTypeReference();
+			//((ArrayTypeReference)typeReference).ElementType = CreateTypeReference(elementType);
+			// FIXME: This is what it *should* be, but it causes major breakage. ??
+			ArrayTypeReference typeReference = new ArrayTypeReference(CreateTypeReference(elementType), CreateIntegerLiteral(((IArrayType)tag).GetArrayRank()));
 			typeReference.Entity = tag;
 			return typeReference;
+		}
+
+		private SimpleTypeReference CreateSimpleTypeReference(IType tag)
+		{
+			SimpleTypeReference tr = BuildTypeReferenceFor(tag);
+			tr.Entity = tag;
+			return tr;
+		}
+
+		private SimpleTypeReference BuildTypeReferenceFor(IType type)
+		{
+			string primitiveName = (type is ExternalType ? ((ExternalType)type).PrimitiveName : null);
+			if (primitiveName != null)
+			{
+				return new SimpleTypeReference(primitiveName);
+			}
+
+			SimpleTypeReference prefix = BuildPrefixTypeReference(type);
+
+			if (type.ConstructedInfo != null)
+			{
+				GenericTypeReference gtr = new GenericTypeReference(prefix, type.Name);
+				gtr.GenericArguments.Extend(Array.ConvertAll<IType, TypeReference>(
+					type.ConstructedInfo.GenericArguments,
+					CreateTypeReference));
+				return gtr;
+			}
+			else if (type.GenericInfo != null)
+			{
+				GenericTypeDefinitionReference gtdr = new GenericTypeDefinitionReference();
+				gtdr.Prefix = prefix;
+				gtdr.Name = type.Name;
+				gtdr.GenericPlaceholders = type.GenericInfo.GenericParameters.Length;
+				return gtdr;
+			}
+			else
+			{
+				return new SimpleTypeReference(prefix, type.Name);
+			}
+		}
+
+		private SimpleTypeReference BuildPrefixTypeReference(IType type)
+		{
+			IType parentType = type.ParentNamespace as IType;
+			if (parentType != null)
+			{
+				return CreateSimpleTypeReference(parentType);
+			}
+
+			NamespaceEntity parentNamespace = type.ParentNamespace as NamespaceEntity;
+			if (parentNamespace != null)
+			{
+				return CreateSimpleTypeReference(parentNamespace);
+			}
+
+			return null;
+		}
+
+		private SimpleTypeReference CreateSimpleTypeReference(NamespaceEntity ns)
+		{
+			SimpleTypeReference str = new SimpleTypeReference(ns.Name);
+			if (ns.ParentNamespace != null)
+			{
+				str.Prefix = CreateSimpleTypeReference(ns.ParentNamespace as NamespaceEntity);
+			}
+			str.Entity = ns;
+			return str;
 		}
 
 		public SuperLiteralExpression CreateSuperReference(IType super)

@@ -46,9 +46,12 @@ namespace Boo.Lang.Compiler.Ast
 		{
 		}
 		
-		public GenericTypeReference(LexicalInfo lexicalInfo, string name) : base(lexicalInfo)
+		public GenericTypeReference(LexicalInfo lexicalInfo, string name) : base(lexicalInfo, name)
 		{
-			this.Name = name;
+		}
+
+		public GenericTypeReference(SimpleTypeReference prefix, string name) : base(prefix, name)
+		{
 		}
 		
 		override public string ToString()

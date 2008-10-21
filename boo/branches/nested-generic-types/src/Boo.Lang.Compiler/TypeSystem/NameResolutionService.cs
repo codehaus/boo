@@ -188,7 +188,7 @@ namespace Boo.Lang.Compiler.TypeSystem
 			return ResolveQualifiedName(targetList, name, EntityType.Any);
 		}
 		
-		public bool ResolveQualifiedName(List targetList, string name, EntityType flags)
+		private bool ResolveQualifiedName(List targetList, string name, EntityType flags)
 		{
 			if (!IsQualifiedName(name))
 			{
@@ -271,78 +271,153 @@ namespace Boo.Lang.Compiler.TypeSystem
 				ResolveTypeReference(tr);
 			}
 		}
-		
+
 		public void ResolveSimpleTypeReference(SimpleTypeReference node)
 		{
 			if (null != node.Entity) return;
-			
-			IEntity entity = ResolveTypeName(node);
-			if (null == entity)
+
+			INamespace explicitNamespace = null;
+			if (node.Prefix != null)
+			{
+				ResolveSimpleTypeReference(node.Prefix);
+				INamespace prefixNamespace = node.Prefix.Entity as INamespace;
+				if (prefixNamespace == null || prefixNamespace is Error)
+				{
+					node.Entity = TypeSystemServices.ErrorEntity;
+					return;
+				}
+				explicitNamespace = prefixNamespace;
+			}
+
+			bool allowNamespaces = IsPrefixOfTypeReference(node);
+			IEntity entity = ResolveTypeName(explicitNamespace, node, allowNamespaces);
+
+			if (entity == null)
 			{
 				node.Entity = NameNotType(node);
 				return;
 			}
-			if (EntityType.Type != entity.EntityType)
+
+			if (entity.EntityType == EntityType.Namespace && allowNamespaces)
 			{
-				if (EntityType.Ambiguous == entity.EntityType)
-				{
-					entity = AmbiguousReference(node, (Ambiguous)entity);
-				}
-				else
-				{
-					entity = NameNotType(node);
-				}
+				node.Entity = entity;
+				return;
+			}
+
+			if (entity.EntityType != EntityType.Type &&
+				entity.EntityType != EntityType.Ambiguous)
+			{
+				node.Entity = NameNotType(node);
+				return;
+			}
+
+			Ambiguous ambiguous = entity as Ambiguous;
+			if (ambiguous != null)
+			{
+				entity = ResolveAmbiguousTypeByGenerity(node, ambiguous);
+			}
+
+			IType type = entity as IType;
+			if (type != null)
+			{
+				entity = AssertCorrectGenerity(node, type);
+			}
+
+			GenericTypeReference gtr = node as GenericTypeReference;
+			if (gtr != null)
+			{
+				entity = ResolveGenericTypeReference(gtr, entity);
+			}
+
+			node.Entity = entity;
+		}
+
+		private IEntity AssertCorrectGenerity(SimpleTypeReference node, IType type)
+		{
+			int requiredGenerity = GetRequestedTypeGenerity(node);
+			if (requiredGenerity != GenericsServices.GetGenericParameters(type).Length)
+			{
+				return GenericArgumentsCountMismatch(node, type);
+			}
+			return type;
+		}
+
+		private bool IsPrefixOfTypeReference(SimpleTypeReference node)
+		{
+			SimpleTypeReference parentReference = node.ParentNode as SimpleTypeReference;
+			return parentReference != null && parentReference.Prefix == node;
+		}
+
+		private IEntity ResolveAmbiguousTypeByGenerity(SimpleTypeReference node, Ambiguous ambiguous)
+		{
+			List<IEntity> matches = ambiguous.Select(MatchesGenerity(GetRequestedTypeGenerity(node)));
+
+			if (matches.Count == 1)
+			{
+				return matches[0];
+			}
+			if (matches.Count == 0)
+			{
+				return ambiguous.Entities[0];
 			}
 			else
 			{
-				GenericTypeReference gtr = node as GenericTypeReference;
-				if (null != gtr)
-				{
-					ResolveTypeReferenceCollection(gtr.GenericArguments);
-					entity = ResolveGenericTypeReference(gtr, entity);
-				}
+				return AmbiguousReference(node, new Ambiguous(matches.ToArray()));
+			}
+		}
+
+		private int GetRequestedTypeGenerity(SimpleTypeReference node)
+		{
+			switch (node.NodeType)
+			{
+				case NodeType.GenericTypeDefinitionReference:
+					return ((GenericTypeDefinitionReference)node).GenericPlaceholders;
+
+				case NodeType.GenericTypeReference:
+					return ((GenericTypeReference)node).GenericArguments.Count;
 				
-				GenericTypeDefinitionReference gtdr = node as GenericTypeDefinitionReference;
-				if (null != gtdr)
-				{
-					IType type = (IType)entity;
-					if (gtdr.GenericPlaceholders != type.GenericInfo.GenericParameters.Length)
-					{
-						entity = GenericArgumentsCountMismatch(gtdr, type);
-					}
-				}
-
-				node.Name = entity.FullName;
+				default:
+					return 0;
 			}
-			
-			node.Entity = entity;		
 		}
 
-		private IEntity ResolveTypeName(SimpleTypeReference node)
-		{	
-			_buffer.Clear();
-			if (IsQualifiedName(node.Name))
-			{
-				ResolveQualifiedName(_buffer, node.Name);
-			}
-			else
-			{
-				Resolve(_buffer, node.Name, EntityType.Type);
-			}
-
-
-			// Remove from the buffer types that do not match requested generity
-			FilterGenericTypes(_buffer, node);
-			return GetEntityFromBuffer();
-		}
-
-		public IType ResolveGenericTypeReference(GenericTypeReference gtr, IEntity definition)
+		private IType ResolveGenericTypeReference(GenericTypeReference gtr, IEntity definition)
 		{
 			ResolveTypeReferenceCollection(gtr.GenericArguments);
 			IType[] typeArguments = GetTypes(gtr.GenericArguments);
-			
+
 			return (IType)_context.GetService<GenericsServices>().ConstructEntity(
 				gtr, definition, typeArguments);
+		}
+
+		private EntityPredicate MatchesGenerity(int requestedGenerity)
+		{
+			return delegate(IEntity entity)
+			{
+				IType type = entity as IType;
+				if (type == null) return false;
+
+				return GenericsServices.GetTypeGenerity(type) == requestedGenerity;
+			};
+		}
+
+		private IEntity ResolveTypeName(INamespace explicitNamespace, SimpleTypeReference node, bool allowNamespaces)
+		{	
+			_buffer.Clear();
+			
+			EntityType flags = EntityType.Type;
+			if (allowNamespaces) flags |= EntityType.Any;
+
+			if (explicitNamespace != null)
+			{
+				explicitNamespace.Resolve(_buffer, node.Name, flags);
+			}
+			else
+			{
+				Resolve(_buffer, node.Name, flags);
+			}
+
+			return GetEntityFromBuffer();
 		}
 
 		public IEntity ResolveGenericReferenceExpression(GenericReferenceExpression gre, IEntity definition)
@@ -381,7 +456,7 @@ namespace Boo.Lang.Compiler.TypeSystem
 
 		private IEntity NameNotType(SimpleTypeReference node)
 		{
-			string suggestion = GetMostSimilarTypeName(node.Name);
+			string suggestion = GetMostSimilarTypeName(node);
 			_context.Errors.Add(CompilerErrorFactory.NameNotType(node, node.ToCodeString(), suggestion));
 			return TypeSystemServices.ErrorEntity;
 		}
@@ -394,7 +469,16 @@ namespace Boo.Lang.Compiler.TypeSystem
 		
 		private IEntity GenericArgumentsCountMismatch(TypeReference node, IType type)
 		{
-			_context.Errors.Add(CompilerErrorFactory.GenericDefinitionArgumentCount(node, type.FullName, type.GenericInfo.GenericParameters.Length));
+			int parameterCount = GenericsServices.GetGenericParameters(type).Length;
+			if (parameterCount > 0)
+			{
+				_context.Errors.Add(CompilerErrorFactory.GenericDefinitionArgumentCount(node, type.FullName, parameterCount));
+			}
+			else
+			{
+				_context.Errors.Add(CompilerErrorFactory.NotAGenericDefinition(node, type.FullName));
+			}
+			
 			return TypeSystemServices.ErrorEntity; 
 		}
 		
@@ -549,6 +633,21 @@ namespace Boo.Lang.Compiler.TypeSystem
 			}
 		}
 
+		private string GetMostSimilarTypeName(SimpleTypeReference node)
+		{
+			INamespace prefix = node.Prefix == null ? null : node.Prefix.Entity as INamespace;
+			if (prefix != null)
+			{
+				string memberName = GetMostSimilarMemberName(node.Prefix.Entity as INamespace, node.Name, EntityType.Type | EntityType.Namespace);
+				if (memberName != null)
+				{
+					return prefix.ToString() + "." + memberName;
+				}
+				return null;
+			}
+			return GetMostSimilarTypeName(node.Name);
+		}
+
 		public string GetMostSimilarTypeName(string name)
 		{
 			string[] nsHierarchy = name.Split('.');
@@ -598,7 +697,7 @@ namespace Boo.Lang.Compiler.TypeSystem
 			string lastMemberName = null;
 			foreach (IEntity member in ns.GetMembers())
 			{
-				if (EntityType.Any != elementType && elementType != member.EntityType)
+				if ((member.EntityType & elementType) != member.EntityType)
 					continue;
 				if (lastMemberName == member.Name)
 					continue;//no need to check this name again
