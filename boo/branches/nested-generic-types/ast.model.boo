@@ -65,6 +65,7 @@ abstract class TypeReference(Node):
 	pass
 
 class SimpleTypeReference(TypeReference):
+	Prefix as SimpleTypeReference
 	Name as string
 
 class ArrayTypeReference(TypeReference):
@@ -80,7 +81,7 @@ class GenericTypeReference(SimpleTypeReference):
 
 class GenericTypeDefinitionReference(SimpleTypeReference):
 	GenericPlaceholders as int
-	
+
 [collection(TypeReference)]
 class TypeReferenceCollection:
 	pass

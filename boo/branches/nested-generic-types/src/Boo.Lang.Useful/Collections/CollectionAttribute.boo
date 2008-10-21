@@ -46,7 +46,7 @@ Example:
 	_itemType as SimpleTypeReference
 	
 	def constructor(itemType as ReferenceExpression):
-		_itemType = SimpleTypeReference(itemType.ToString())	
+		_itemType = TypeReference.Lift(itemType)
 		
 	override def Apply(node as Node):
 		if not node isa ClassDefinition:

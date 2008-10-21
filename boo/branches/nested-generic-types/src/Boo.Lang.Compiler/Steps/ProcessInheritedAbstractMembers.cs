@@ -307,6 +307,7 @@ namespace Boo.Lang.Compiler.Steps
 
 			foreach(SimpleTypeReference parent in node.BaseTypes)
 			{
+				// FIXME: wrong usage of SimpleTypeReference.Name
 				if(_classDefinitionList.Contains(parent.Name))
 				{
 					depth++;
@@ -397,6 +398,7 @@ namespace Boo.Lang.Compiler.Steps
 			}
 			foreach(SimpleTypeReference parent in node.BaseTypes)
 			{
+				// FIXME: wrong usage of SimpleTypeReference.Name
 				if(_classDefinitionList.Contains(parent.Name))
 				{
 					depth++;
@@ -447,9 +449,9 @@ namespace Boo.Lang.Compiler.Steps
 				return;
 			}
 
-			// FIXME: this will fail with InvalidCastException on a base type that's a GenericTypeReference!
 			foreach(SimpleTypeReference parent in node.BaseTypes)
 			{
+				// FIXME: wrong usage of SimpleTypeReference.Name
 				if(_classDefinitionList.Contains(parent.Name))
 				{
 					depth++;

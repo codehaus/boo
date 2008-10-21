@@ -42,6 +42,7 @@ namespace Boo.Lang.Compiler.Ast
 		{
 			foreach (SimpleTypeReference item in this)
 			{
+				// FIXME: wrong usage of SimpleTypeReference.Name
 				if (name == item.Name) return true;
 			}
 			return false;

@@ -630,35 +630,32 @@ event_declaration [TypeMemberCollection container]
 	;
 
 protected
+optional_explicit_member_info returns [ExplicitMemberInfo emi = null]:
+		((simple_type_reference DOT) => (emi = explicit_member_info))?
+		;
+	
+protected
 explicit_member_info returns [ExplicitMemberInfo emi]
 	{
-		emi = null; _sbuilder.Length = 0;
+		emi = null;
+		SimpleTypeReference str;
 	}:
-	(ID DOT)=>(
-		(
-			(id:ID DOT)
-			{
-				emi = new ExplicitMemberInfo(ToLexicalInfo(id));
-				_sbuilder.Append(id.getText());
-			}
-			(
-				(id2:ID DOT)
-				{
-					_sbuilder.Append('.');
-					_sbuilder.Append(id2.getText());
-				}
-			)*
-		)
-	)
-	{
-		if (emi != null)
+	(
+		(str = simple_type_reference DOT)
 		{
-			emi.InterfaceType = new SimpleTypeReference(emi.LexicalInfo);
-			emi.InterfaceType.Name = _sbuilder.ToString();
+			emi = new ExplicitMemberInfo(str.LexicalInfo);
+			emi.InterfaceType = str;
 		}
-	}
+		(
+			(str = simple_type_reference DOT)
+			{
+				str.Prefix = emi.InterfaceType;
+				emi.InterfaceType = str;
+			}
+		)*
+	)
 	;
-
+	
 protected
 method [TypeMemberCollection container]
 	{
@@ -677,7 +674,7 @@ method [TypeMemberCollection container]
 	(		
 		(
 			(
-				(emi=explicit_member_info)?
+				(emi=optional_explicit_member_info)?
 				(id:ID | spliceBegin:SPLICE_BEGIN nameSplice=atom)
 			) {
 				IToken token = id ?? spliceBegin;
@@ -744,7 +741,7 @@ field_or_property [TypeMemberCollection container]
 }:
 (	
 	(property_header)=>(
-		(emi=explicit_member_info)?
+		(emi=optional_explicit_member_info)?
 		(id1:ID {id=id1;}
 		| begin1:SPLICE_BEGIN nameSplice=atom {id=begin1;}
 		| s:SELF {id=s;})
@@ -1097,8 +1094,6 @@ type_reference returns [TypeReference tr]
 	{
 		tr = null;
 		IToken id = null;
-		TypeReferenceCollection arguments = null;
-		GenericTypeDefinitionReference gtdr = null;
 	}: 
 	tr=splice_type_reference
 	|
@@ -1106,88 +1101,141 @@ type_reference returns [TypeReference tr]
 	|
 	(CALLABLE LPAREN)=>(tr=callable_type_reference)
 	|
+	tr=keyword_type_reference
+	|
+	tr=qualified_simple_type_reference
 	(
-		id=type_name
-		(
-			(
-				LBRACK (OF)? 
-				(
-					(
-						MULTIPLY
-						{
-							gtdr = new GenericTypeDefinitionReference(ToLexicalInfo(id));
-							gtdr.Name = id.getText();
-							gtdr.GenericPlaceholders = 1;
-							tr = gtdr;										
-						}
-						( 
-							COMMA MULTIPLY
-							{
-								gtdr.GenericPlaceholders++;
-							}
-						)*
-						RBRACK
-					)
-					|
-					(
-						{
-							GenericTypeReference gtr = new GenericTypeReference(ToLexicalInfo(id), id.getText());
-							arguments = gtr.GenericArguments;
-							tr = gtr;
-						}
-						type_reference_list[arguments]
-						RBRACK
-					)
-				)
-			)
-			|
-			(
-				OF MULTIPLY
-				{
-					gtdr = new GenericTypeDefinitionReference(ToLexicalInfo(id));
-					gtdr.Name = id.getText();
-					gtdr.GenericPlaceholders = 1;
-					tr = gtdr;
-				}
-			)
-			|
-			(
-				OF tr=type_reference
-				{
-					GenericTypeReference gtr = new GenericTypeReference(ToLexicalInfo(id), id.getText());
-					gtr.GenericArguments.Add(tr);
-					tr = gtr;
-				}
-			)
-			|
-			{
-				SimpleTypeReference str = new SimpleTypeReference(ToLexicalInfo(id));
-				str.Name = id.getText();
-				tr = str;
-			}
-		)
-		(NULLABLE_SUFFIX {
+		NULLABLE_SUFFIX 
+		{
 				GenericTypeReference ntr = new GenericTypeReference(tr.LexicalInfo, "System.Nullable");
 				ntr.GenericArguments.Add(tr);
 				tr = ntr;
-			}
-		)?
-		(MULTIPLY {
+		}
+	)?
+	(
+		MULTIPLY 
+		{
 				GenericTypeReference etr = new GenericTypeReference(tr.LexicalInfo, "System.Collections.Generic.IEnumerable");
 				etr.GenericArguments.Add(tr);
 				tr = etr;
-			}
-		)?
+		}
+	)?
+	;
+
+protected 
+keyword_type_reference returns [SimpleTypeReference tr = null]
+	{
+		IToken token = null;
+	}:
+	(
+		c:CALLABLE { token = c; } 
+		| 
+		ch:CHAR { token = ch; }
 	)
+	{
+		tr = new SimpleTypeReference(ToLexicalInfo(token), token.getText());
+	}
 	;
 	
 protected
-type_name returns [IToken id]
+qualified_simple_type_reference returns [SimpleTypeReference tr]
 	{
-		id = null;
-	}:
-	id=identifier |	c:CALLABLE { id=c; } | ch:CHAR { id=ch; }
+		tr = null;
+		SimpleTypeReference prefix = null;
+	}:	
+	tr = simple_type_reference
+	(
+		DOT { prefix = tr; } tr = simple_type_reference
+		{
+			tr.Prefix = prefix;
+			tr.LexicalInfo = prefix.LexicalInfo;
+		}
+	)*
 	;
+
+protected
+simple_type_reference returns [SimpleTypeReference tr = null]:
+	name:ID
+	(
+		tr = generic_type_reference_modifiers
+		|
+		{
+			tr = new SimpleTypeReference();
+		}
+	)
+	{
+		tr.Name = name.getText();
+		tr.LexicalInfo = ToLexicalInfo(name);
+	}
+	;
+	
+	
+protected
+generic_type_reference_modifiers returns [SimpleTypeReference tr = null]
+	{
+		GenericTypeDefinitionReference gtdr = null;
+		GenericTypeReference gtr = null;
+		TypeReferenceCollection arguments = null;
+		TypeReference arg = null;
+	}:
+	(
+		LBRACK (OF)? 
+		(
+			(
+				MULTIPLY
+				{
+					gtdr = new GenericTypeDefinitionReference();
+					gtdr.GenericPlaceholders = 1;
+					tr = gtdr;										
+				}
+				( 
+					COMMA MULTIPLY
+					{
+						gtdr.GenericPlaceholders++;
+					}
+				)*
+			)
+			|
+			(
+				{
+					gtr = new GenericTypeReference();
+					arguments = gtr.GenericArguments;
+					tr = gtr;
+				}
+				type_reference_list[arguments]
+			)
+		)
+		RBRACK
+	)
+	|
+	(
+		OF MULTIPLY
+		{
+			gtdr = new GenericTypeDefinitionReference();
+			gtdr.GenericPlaceholders = 1;
+			tr = gtdr;
+		}
+	)
+	|
+	(
+		OF arg=type_reference
+		{
+			gtr = new GenericTypeReference();
+			gtr.GenericArguments.Add(arg);
+			tr = gtr;
+		}
+	)
+	;
+
+/*
+protected
+type_name returns [IToken typename]
+	{
+		typename = null;
+	}:
+	id:ID {typename=id;} |	c:CALLABLE { typename=c; } | ch:CHAR { typename=ch; }
+	;
+*/
 
 protected
 begin: COLON INDENT;

@@ -38,6 +38,7 @@ namespace Boo.Lang.Compiler.Ast
 	{	
 		public static TypeReference Lift(System.Type type)
 		{
+			// FIXME: This will fail for generic types
 			return new SimpleTypeReference(Boo.Lang.Compiler.Util.TypeUtilities.GetFullName(type));
 		}
 		
@@ -53,18 +54,29 @@ namespace Boo.Lang.Compiler.Ast
 
 		public static TypeReference Lift(TypeDefinition node)
 		{
-			if (node.HasGenericParameters) return LiftGenericTypeDefinition(node);
-			return new SimpleTypeReference(node.FullName);
-		}
+			SimpleTypeReference prefix = null;
 
-		private static TypeReference LiftGenericTypeDefinition(TypeDefinition node)
-		{
-			GenericTypeReference typeRef = new GenericTypeReference(node.LexicalInfo, node.QualifiedName);
+			TypeDefinition parentType = node.ParentNode as TypeDefinition;
+			if (parentType != null)
+			{
+				prefix = (SimpleTypeReference)Lift(parentType);
+			}
+			else if (node.EnclosingNamespace != null)
+			{
+				prefix = (SimpleTypeReference)Lift(node.EnclosingNamespace.Name);
+			}
+
+			if (!node.HasGenericParameters)
+			{
+				return new SimpleTypeReference(prefix, node.Name);
+			}
+
+			GenericTypeReference gtr = new GenericTypeReference(prefix, node.Name);
 			foreach (GenericParameterDeclaration parameter in node.GenericParameters)
 			{
-				typeRef.GenericArguments.Add(Lift(parameter.Name));
+				gtr.GenericArguments.Add(Lift(parameter.Name));
 			}
-			return typeRef;
+			return gtr;
 		}
 
 		public static TypeReference Lift(Expression e)
@@ -75,9 +87,9 @@ namespace Boo.Lang.Compiler.Ast
 					return Lift((TypeofExpression) e);
 				case NodeType.GenericReferenceExpression:
 					return Lift((GenericReferenceExpression) e);
-				case Ast.NodeType.ReferenceExpression:
+				case NodeType.ReferenceExpression:
 					return Lift((ReferenceExpression) e);
-				case Ast.NodeType.MemberReferenceExpression:
+				case NodeType.MemberReferenceExpression:
 					return Lift((MemberReferenceExpression) e);
 			}
 			throw new NotImplementedException(e.ToCodeString());
@@ -85,25 +97,33 @@ namespace Boo.Lang.Compiler.Ast
 
 		public static TypeReference Lift(ReferenceExpression e)
 		{
-			return new SimpleTypeReference(e.LexicalInfo, e.ToString());
+			SimpleTypeReference tr = new SimpleTypeReference(e.LexicalInfo, e.Name);
+			tr.Prefix = LiftOptionalPrefixFromMemberReference(e);
+			return tr;
+		}
+
+		public static TypeReference Lift(GenericReferenceExpression e)
+		{
+			ReferenceExpression target = (ReferenceExpression)e.Target; // TODO: Assert this?
+			GenericTypeReference gtr = new GenericTypeReference(e.LexicalInfo, target.Name);
+			gtr.Prefix = LiftOptionalPrefixFromMemberReference(target);
+			gtr.GenericArguments.ExtendWithClones(e.GenericArguments);
+			return gtr;
+		}
+
+		private static SimpleTypeReference LiftOptionalPrefixFromMemberReference(ReferenceExpression re)
+		{
+			MemberReferenceExpression mre = re as MemberReferenceExpression;
+			if (mre != null)
+			{
+				return (SimpleTypeReference)Lift((ReferenceExpression)mre.Target);
+			}
+			return null;
 		}
 
 		public static TypeReference Lift(TypeofExpression e)
 		{
 			return e.Type.CloneNode();
-		}
-
-		public static TypeReference Lift(GenericReferenceExpression e)
-		{
-			GenericTypeReference typeRef = new GenericTypeReference(e.LexicalInfo);
-			typeRef.Name = TypeNameFor(e.Target);
-			typeRef.GenericArguments.ExtendWithClones(e.GenericArguments);
-			return typeRef;
-		}
-
-		private static string TypeNameFor(Expression target)
-		{
-			return ((ReferenceExpression) target).ToString();
 		}
 
 		public TypeReference()

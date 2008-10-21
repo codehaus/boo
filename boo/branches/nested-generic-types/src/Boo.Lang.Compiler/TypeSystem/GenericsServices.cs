@@ -271,7 +271,7 @@ namespace Boo.Lang.Compiler.TypeSystem
 			{
 				return ((IMethod)definition).GenericInfo.GenericParameters;
 			}
-			return null;
+			return new IGenericParameter[0];
 		}
 
 		/// <summary>

@@ -11,7 +11,7 @@ public class Item(object):
 [System.Reflection.DefaultMemberAttribute('Item')]
 public class Collection(object):
 
-	public Item[index as int] as TypeResolution.Item:
+	public Item[index as int] as Item:
 		public get:
 			pass
 

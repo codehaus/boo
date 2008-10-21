@@ -158,7 +158,7 @@ namespace Boo.Lang.Compiler.Steps
 		{
 			IGenericParameter[] lgp = GenericsServices.GetGenericParameters(lhs.Entity);
 			IGenericParameter[] rgp = GenericsServices.GetGenericParameters(rhs.Entity);
-			return (lgp == rgp || (null != lgp && null != rgp && lgp.Length == rgp.Length));
+			return (lgp.Length == rgp.Length);
 		}
 
 		bool AreDifferentInterfaceMembers(IExplicitMember lhs, IExplicitMember rhs)

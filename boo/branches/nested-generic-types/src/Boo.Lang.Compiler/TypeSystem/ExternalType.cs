@@ -300,7 +300,21 @@ namespace Boo.Lang.Compiler.TypeSystem
 
 		public virtual INamespace ParentNamespace
 		{
-			get { return null; }
+			get 
+			{
+				if (DeclaringType != null)
+				{
+					return DeclaringType;
+				}
+				else
+				{
+					// FIXME: this fails on test fixtures that don't initialize NameResolutionService.
+					// it seems to me that the ability to map an external namespace to its NamespaceEntity 
+					// should be part of TypeSystemServices, not NameResolutionService.
+					NameResolutionService nrs = CompilerContext.Current.NameResolutionService;
+					return nrs.GetNamespace(ActualType.Namespace);
+				}
+			}
 		}
 
 		public virtual bool Resolve(List targetList, string name, EntityType flags)
