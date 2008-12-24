@@ -7,6 +7,7 @@ BOO_GAC_DLLS = Boo.Lang.dll \
 	       Boo.Lang.Compiler.dll \
 	       Boo.Lang.Parser.dll \
 	       Boo.Lang.Interpreter.dll \
+		   Boo.Lang.PatternMatching.dll \
 	       Boo.Lang.CodeDom.dll
 
 install-data-hook:
