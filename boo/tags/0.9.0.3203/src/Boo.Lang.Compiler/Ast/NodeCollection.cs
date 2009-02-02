@@ -71,7 +71,7 @@ namespace Boo.Lang.Compiler.Ast
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			foreach (T item in _list) yield return item;
+			return _list.GetEnumerator();
 		}
 
 		public int Count
